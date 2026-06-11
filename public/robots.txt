@@ -1,0 +1,6 @@
+# Allow all web crawlers to index the application
+User-agent: *
+Allow: /
+
+# Link to sitemap
+Sitemap: https://slythnox.github.io/OnyxUi/sitemap.xml
