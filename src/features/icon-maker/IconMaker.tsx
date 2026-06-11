@@ -133,8 +133,7 @@ export default function IconMaker() {
       .filter((n) => {
         const val = (LucideIcons as Record<string, unknown>)[n];
         return val !== null && (typeof val === 'object' || typeof val === 'function');
-      })
-      .slice(0, 200);
+      });
   }, [searchTerm, selectedCategory]);
 
   const IconComponent = (LucideIcons as Record<string, React.ComponentType<{ size?: number; strokeWidth?: number; color?: string; className?: string }>>)[selectedIconName];
@@ -396,7 +395,6 @@ export default function IconMaker() {
 
           <p className="text-white/30 text-xs mb-2 flex-shrink-0">
             {filteredIcons.length} icon{filteredIcons.length !== 1 ? 's' : ''}
-            {filteredIcons.length === 200 ? ' (showing first 200)' : ''}
           </p>
 
           <div className="flex-1 overflow-y-auto scrollbar-custom">
