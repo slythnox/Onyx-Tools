@@ -150,13 +150,13 @@
 <h2 style="font-family: 'Inter', sans-serif; color: #ffffff;">Installation and Development</h2>
 
 <p style="font-family: 'Inter', sans-serif; color: #a1a1aa; font-size: 0.95rem; line-height: 1.6;">
-  To run the NOX workspace locally, follow these standard commands:
+  To run the NOX Tools locally, follow these standard commands:
 </p>
 
 ```bash
 # Clone the repository
-git clone https://github.com/slythnox/NOX-Workspace.git
-cd NOX-Workspace
+git clone https://github.com/slythnox/NOX-Tools.git
+cd NOX-Tools
 
 # Install dependencies
 npm install
