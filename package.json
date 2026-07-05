@@ -16,13 +16,13 @@
   ],
   "author": "slythnox",
   "license": "MIT",
-  "homepage": "https://slythnox.github.io/NOX-Workspace/",
+  "homepage": "https://slythnox.github.io/NOX-Tools/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/slythnox/NOX-Workspace.git"
+    "url": "https://github.com/slythnox/NOX-Tools.git"
   },
   "bugs": {
-    "url": "https://github.com/slythnox/NOX-Workspace/issues"
+    "url": "https://github.com/slythnox/NOX-Tools/issues"
   },
   "scripts": {
     "dev": "vite",

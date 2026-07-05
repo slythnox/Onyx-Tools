@@ -27,7 +27,7 @@ export default function AppLayout() {
           <div className="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[10px] text-zinc-600">
             <div>NOX — Professional Developer Workspace.</div>
             <div className="flex gap-4">
-              <a href="https://github.com/slythnox/NOX-Workspace" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-400 transition-colors">Open Source</a>
+              <a href="https://github.com/slythnox/NOX-Tools" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-400 transition-colors">Open Source</a>
               <span>•</span>
               <span>Fully Local & Private</span>
               <span>•</span>

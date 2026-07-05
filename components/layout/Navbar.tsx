@@ -43,7 +43,7 @@ export default function Navbar() {
         {/* Global actions: GitHub Link */}
         <div className="flex items-center gap-3">
           <a
-            href="https://github.com/slythnox/NOX-Workspace"
+            href="https://github.com/slythnox/NOX-Tools"
             target="_blank"
             rel="noopener noreferrer"
             className="p-1 text-zinc-400 hover:text-zinc-100 transition-colors"
