@@ -1,0 +1,406 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-black: #000000;
+    --bg-panel: #09090b;
+    --bg-card: #0c0c0e;
+    --bg-hover: #18181b;
+    
+    --border: #18181b;
+    --border-active: #27272a;
+    --border-muted: #0f0f11;
+
+    --text: #f4f4f5;
+    --text-muted: #a1a1aa;
+    --text-dim: #71717a;
+
+    --accent: #ffffff;
+    --accent-muted: #e4e4e7;
+  }
+
+  * {
+    @apply border-zinc-800;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg-black);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Monospace defaults */
+  .font-mono {
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+}
+
+@layer components {
+  /* Machined Panel Style */
+  .machined-panel {
+    background-color: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+
+  .machined-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    transition: all 150ms ease-out;
+  }
+
+  .machined-card:hover {
+    background-color: var(--bg-panel);
+    border-color: var(--border-active);
+  }
+
+  /* Flat Block Button Styles */
+  .btn-machined-primary {
+    background-color: var(--text);
+    color: var(--bg-black);
+    font-weight: 500;
+    font-size: 13px;
+    padding: 0.5rem 0.875rem;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    transition: all 150ms ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+  }
+
+  .btn-machined-primary:hover {
+    background-color: var(--accent-muted);
+  }
+
+  .btn-machined-secondary {
+    background-color: var(--bg-panel);
+    color: var(--text);
+    font-weight: 500;
+    font-size: 13px;
+    padding: 0.5rem 0.875rem;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    transition: all 150ms ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+  }
+
+  .btn-machined-secondary:hover {
+    background-color: var(--bg-hover);
+    border-color: var(--border-active);
+  }
+
+  .btn-machined-ghost {
+    background-color: transparent;
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 13px;
+    padding: 0.5rem 0.875rem;
+    border-radius: 4px;
+    transition: all 150ms ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+  }
+
+  .btn-machined-ghost:hover {
+    background-color: var(--bg-hover);
+    color: var(--text);
+  }
+
+  /* Keyboard shortcut tag */
+  .kbd-tag {
+    background-color: var(--bg-hover);
+    border: 1px solid var(--border-active);
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 0.125rem 0.375rem;
+    border-radius: 3px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  /* Industrial Input Controls */
+  .input-machined {
+    background-color: var(--bg-black);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 13px;
+    padding: 0.5rem 0.75rem;
+    outline: none;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+  }
+
+  .input-machined:focus {
+    border-color: var(--border-active);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
+  }
+
+  .input-machined::placeholder {
+    color: var(--text-dim);
+  }
+
+  .select-machined {
+    background-color: var(--bg-black);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 13px;
+    padding: 0.5rem 0.75rem;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 150ms ease;
+  }
+
+  .select-machined:hover {
+    border-color: var(--border-active);
+  }
+
+  /* Scrollbar - Ultra Minimal (Industrial Zinc) */
+  .scrollbar-machined::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  .scrollbar-machined::-webkit-scrollbar-track {
+    background: var(--bg-black);
+  }
+
+  .scrollbar-machined::-webkit-scrollbar-thumb {
+    background: var(--border-active);
+    border-radius: 2px;
+  }
+
+  .scrollbar-machined::-webkit-scrollbar-thumb:hover {
+    background: var(--text-dim);
+  }
+}
+
+/* Custom transitions and slider adjustments */
+input[type="range"].slider-machined {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 3px;
+  background: var(--border);
+  outline: none;
+  border-radius: 2px;
+}
+
+input[type="range"].slider-machined::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  background: var(--text);
+  cursor: pointer;
+  border: 1px solid var(--bg-black);
+  transition: transform 100ms ease;
+}
+
+input[type="range"].slider-machined::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+
+/* Code Theme syntax definitions */
+.code-editor-machined {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  tab-size: 2;
+}
+
+/* Pre-existing token colors from old styles mapped cleanly */
+.token-keyword { color: #cc7832; }
+.token-function { color: #ffc66d; }
+.token-string { color: #6a8759; }
+.token-number { color: #6897bb; }
+.token-comment { color: #808080; font-style: italic; }
+.token-operator { color: #a9b7c6; }
+.token-template-literal { color: #6a8759; }
+.token-template-expression { color: #ffc66d; }
+
+/* -------------------------------------------------------------
+   COMPATIBILITY OVERRIDES FOR TOOL MODULE PAGES
+   This enforces the industrial dark theme cleanly on old components.
+   ------------------------------------------------------------- */
+
+/* Enforce flat dark backgrounds on old glass classes */
+.glass-minimal, 
+.glass-surface, 
+.glass-elevated {
+  background-color: var(--bg-panel) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+/* Snaps border rounding to industrial sharp corners */
+.rounded-xl, 
+.rounded-2xl, 
+.rounded-3xl {
+  border-radius: 4px !important;
+}
+
+/* Enforce dark colors for scrollbars */
+.scrollbar-custom, 
+.scrollbar-minimal {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-active) var(--bg-black);
+}
+
+.scrollbar-custom::-webkit-scrollbar,
+.scrollbar-minimal::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-track,
+.scrollbar-minimal::-webkit-scrollbar-track {
+  background: var(--bg-black);
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb,
+.scrollbar-minimal::-webkit-scrollbar-thumb {
+  background: var(--border-active);
+  border-radius: 2px;
+}
+
+/* Map buttons to clean flat variants */
+.btn-primary, 
+.btn-glass-primary {
+  background-color: var(--text) !important;
+  color: var(--bg-black) !important;
+  border: 1px solid transparent !important;
+  border-radius: 4px !important;
+  font-weight: 500 !important;
+  font-size: 13px !important;
+  box-shadow: none !important;
+  transition: background-color 150ms ease !important;
+}
+
+.btn-primary:hover, 
+.btn-glass-primary:hover {
+  background-color: var(--accent-muted) !important;
+  filter: none !important;
+}
+
+.btn-secondary, 
+.btn-glass-secondary {
+  background-color: var(--bg-panel) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 4px !important;
+  font-weight: 500 !important;
+  font-size: 13px !important;
+  box-shadow: none !important;
+  transition: all 150ms ease !important;
+}
+
+.btn-secondary:hover, 
+.btn-glass-secondary:hover {
+  background-color: var(--bg-hover) !important;
+  border-color: var(--border-active) !important;
+  filter: none !important;
+}
+
+/* Inputs & Selection lists */
+.input-field, 
+.glass-input {
+  background-color: var(--bg-black) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 4px !important;
+  outline: none !important;
+  font-size: 13px !important;
+}
+
+.input-field:focus, 
+.glass-input:focus {
+  border-color: var(--border-active) !important;
+  box-shadow: none !important;
+}
+
+.select-field {
+  background-color: var(--bg-black) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 4px !important;
+  outline: none !important;
+  font-size: 13px !important;
+  cursor: pointer !important;
+}
+
+.select-field:hover {
+  border-color: var(--border-active) !important;
+}
+
+/* Enforce flat checkbox/switch boxes */
+.bg-primary {
+  background-color: var(--border-active) !important;
+}
+
+.border-primary {
+  border-color: var(--border-active) !important;
+}
+
+/* Override any remaining neon glows */
+.bg-primary-active, 
+.bg-secondary-active {
+  background-color: var(--border-active) !important;
+  color: var(--text) !important;
+  box-shadow: none !important;
+}
+
+/* Range input defaults system-wide in tools */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 3px !important;
+  background: var(--border);
+  outline: none !important;
+  border-radius: 2px !important;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px !important;
+  height: 12px !important;
+  border-radius: 2px !important;
+  background: var(--text) !important;
+  cursor: pointer !important;
+  border: 1px solid var(--bg-black) !important;
+  box-shadow: none !important;
+  transition: transform 100ms ease !important;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.1) !important;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 12px !important;
+  height: 12px !important;
+  border-radius: 2px !important;
+  background: var(--text) !important;
+  cursor: pointer !important;
+  border: 1px solid var(--bg-black) !important;
+  box-shadow: none !important;
+}

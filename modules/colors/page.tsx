@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { Palette, Code, AlertCircle, X, Copy, Check } from 'lucide-react';
 import { ColorSystemState, ColorPalette } from './types';
 import { generateColorPalette, generateCSSCode } from './colorUtils';
+import { useToast } from '@/app/providers/ToastProvider';
 
 export default function ColorSystemMaker() {
+    const { toast } = useToast();
     const [colorState, setColorState] = useState<ColorSystemState>({
         saturation: 65, // Default: moderately vivid
         hue: 264, // Default: purple/blue
@@ -42,6 +44,7 @@ export default function ColorSystemMaker() {
     const copyCode = () => {
         navigator.clipboard.writeText(generateCSSCode(palette));
         setCodeCopied(true);
+        toast('Copied OKLCH CSS variables to clipboard', 'success');
         setTimeout(() => setCodeCopied(false), 2000);
     };
 

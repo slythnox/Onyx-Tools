@@ -1,13 +1,15 @@
 import { useState, useRef, useCallback } from 'react';
 import { Download, Copy, Check, AlertCircle } from 'lucide-react';
 import { CodeSettings } from './types';
-import { ExportState } from '../../types';
-import { CODE_THEMES, BACKGROUND_OPTIONS, LANGUAGES, DEFAULT_CODE } from '../../utils/constants';
-import { highlightCode } from '../../utils/syntax-highlighter';
-import { exportToPng, copyToClipboard, generateFilename } from '../../utils/image-export';
+import { ExportState } from '@/types';
+import { CODE_THEMES, BACKGROUND_OPTIONS, LANGUAGES, DEFAULT_CODE } from './config';
+import { highlightCode } from '@/lib/syntax-highlighter';
+import { exportToPng, copyToClipboard, generateFilename } from '@/lib/image-export';
+import { useToast } from '@/app/providers/ToastProvider';
 
 
 export default function SnippetMaker() {
+  const { toast } = useToast();
   const [code, setCode] = useState(DEFAULT_CODE);
   const [isEditing, setIsEditing] = useState(false);
   const [settings, setSettings] = useState<CodeSettings>({
@@ -47,9 +49,11 @@ export default function SnippetMaker() {
         const filename = generateFilename('code-snippet');
         await exportToPng(previewRef.current!, filename);
         setExportState({ isExporting: false, success: true, error: null });
+        toast('Exported snippet to PNG successfully', 'success');
         resetExportState();
       } catch {
         setExportState({ isExporting: false, success: false, error: 'Failed to export image' });
+        toast('Failed to export snippet image', 'error');
         resetExportState();
       }
     }, 100);
@@ -66,9 +70,11 @@ export default function SnippetMaker() {
       try {
         await copyToClipboard(previewRef.current!);
         setExportState({ isExporting: false, success: true, error: null });
+        toast('Copied snippet image to clipboard', 'success');
         resetExportState();
       } catch {
         setExportState({ isExporting: false, success: false, error: 'Failed to copy to clipboard' });
+        toast('Failed to copy snippet image', 'error');
         resetExportState();
       }
     }, 100);

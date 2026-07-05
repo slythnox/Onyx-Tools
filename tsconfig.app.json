@@ -18,7 +18,24 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    /* Aliases */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    }
   },
-  "include": ["src"]
+  "include": [
+    "app",
+    "modules",
+    "components",
+    "registry",
+    "lib",
+    "hooks",
+    "types",
+    "styles",
+    "main.tsx",
+    "vite-env.d.ts"
+  ]
 }

@@ -1,6 +1,7 @@
 import { useState, useRef, useMemo } from 'react';
 import { Download, Copy, Check, AlertCircle, Search, Filter } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
+import { useToast } from '@/app/providers/ToastProvider';
 
 // Lucide-only icon list — filtered to callable React components
 const ALL_ICON_NAMES: string[] = Object.keys(LucideIcons).filter(
@@ -11,7 +12,7 @@ const ALL_ICON_NAMES: string[] = Object.keys(LucideIcons).filter(
     /^[A-Z]/.test(name) &&
     ((LucideIcons as Record<string, unknown>)[name] !== null &&
       (typeof (LucideIcons as Record<string, unknown>)[name] === 'object' ||
-       typeof (LucideIcons as Record<string, unknown>)[name] === 'function'))
+        typeof (LucideIcons as Record<string, unknown>)[name] === 'function'))
 );
 
 const ICON_CATEGORIES: Record<string, string[]> = {
@@ -55,6 +56,7 @@ const ICON_CATEGORIES: Record<string, string[]> = {
 };
 
 export default function IconMaker() {
+  const { toast } = useToast();
   const [selectedIconName, setSelectedIconName] = useState<string>('Star');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Popular');
@@ -95,9 +97,11 @@ export default function IconMaker() {
       link.href = dataUrl;
       link.click();
       setExportState({ isExporting: false, success: true, error: null });
+      toast('Exported icon to PNG successfully', 'success');
       resetExportState();
     } catch {
       setExportState({ isExporting: false, success: false, error: 'Failed to export image' });
+      toast('Failed to export icon image', 'error');
       resetExportState();
     }
   };
@@ -112,9 +116,11 @@ export default function IconMaker() {
       const blob = await (await fetch(dataUrl)).blob();
       await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
       setExportState({ isExporting: false, success: true, error: null });
+      toast('Copied icon image to clipboard', 'success');
       resetExportState();
     } catch {
       setExportState({ isExporting: false, success: false, error: 'Failed to copy to clipboard' });
+      toast('Failed to copy icon image', 'error');
       resetExportState();
     }
   };
