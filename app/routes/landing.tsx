@@ -76,6 +76,29 @@ export default function LandingPage() {
           })}
         </div>
       </section>
+
+      {/* 3. About the Creator Section */}
+      <section className="w-full max-w-4xl px-6 mb-24 mt-8">
+        <h2 className="font-mono text-xs text-zinc-500 font-bold uppercase tracking-widest mb-6 text-left border-b border-zinc-900 pb-2">
+          Creator
+        </h2>
+        <div className="flex flex-col md:flex-row items-center gap-6 p-6 rounded border border-zinc-900 bg-zinc-950/20 backdrop-blur-sm">
+          <div className="w-16 h-16 rounded-full border border-zinc-805 bg-zinc-900 flex items-center justify-center font-mono text-xl font-bold text-white shadow-inner shrink-0 select-none">
+            SL
+          </div>
+          <div className="flex-1 text-center md:text-left space-y-2">
+            <h3 className="font-mono text-sm font-bold text-white">slythnox</h3>
+            <p className="text-xs text-zinc-450 leading-relaxed max-w-2xl">
+              Software architect and designer. Creator of NOX. Building local-first developer utilities, minimal interfaces, and high-performance visual tools. Dedicated to creating polished workflows that run entirely in the browser, keeping your development data private and fast.
+            </p>
+            <div className="flex justify-center md:justify-start gap-4 pt-1 text-[10px] font-mono text-zinc-500">
+              <a href="https://github.com/slythnox" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-300 transition-colors">github.com/slythnox</a>
+              <span>•</span>
+              <a href="https://github.com/slythnox/OnyxUi" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-300 transition-colors">github.com/slythnox/OnyxUi</a>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

@@ -2,12 +2,12 @@
 
   <br />
 
-  <img src="public/logo.png" width="120" alt="OnyxUi Logo" style="border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);" />
+  <img src="public/logo.png" width="120" alt="NOX Logo" style="border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);" />
 
-  <h1 align="center" style="font-family: 'Inter', sans-serif; font-weight: 800; font-size: 2.5rem; letter-spacing: -0.05em; color: #ffffff; margin-top: 1.5rem; margin-bottom: 0.5rem;">OnyxUi</h1>
+  <h1 align="center" style="font-family: 'Inter', sans-serif; font-weight: 800; font-size: 2.5rem; letter-spacing: -0.05em; color: #ffffff; margin-top: 1.5rem; margin-bottom: 0.5rem;">NOX</h1>
 
   <p align="center" style="font-family: 'Inter', sans-serif; font-size: 1.1rem; color: #a1a1aa; max-width: 600px; margin-bottom: 1.5rem;">
-    An elegant, high-retina developer asset generator designed for fast, local workflow customization. Create snippets, optimize icons, and configure uniform color systems.
+    An elegant, high-retina developer asset generator designed for fast, local workflow customization. Create snippets, optimize icons, custom WebGL backgrounds, and configure uniform color systems.
   </p>
 
   <div>
@@ -35,7 +35,7 @@
 <h2 align="center" style="font-family: 'Inter', sans-serif; color: #ffffff;">Core Workspace Tools</h2>
 
 <p align="center" style="font-family: 'Inter', sans-serif; color: #a1a1aa; margin-bottom: 2rem;">
-  OnyxUi runs entirely in the browser, providing three specialized tools with zero external API dependencies.
+  NOX runs entirely in the browser, providing four specialized tools with zero external API dependencies.
 </p>
 
 <table width="100%" style="border-collapse: collapse; border: 1px solid #27272a; font-family: 'Inter', sans-serif; background: #09090b;">
@@ -150,7 +150,7 @@
 <h2 style="font-family: 'Inter', sans-serif; color: #ffffff;">Installation and Development</h2>
 
 <p style="font-family: 'Inter', sans-serif; color: #a1a1aa; font-size: 0.95rem; line-height: 1.6;">
-  To run the OnyxUi workspace locally, follow these standard commands:
+  To run the NOX workspace locally, follow these standard commands:
 </p>
 
 ```bash
@@ -186,6 +186,6 @@ npm run preview
 <hr style="border: 0; height: 1px; background: #27272a; margin: 2rem 0;" />
 
 <div align="center" style="font-family: 'Inter', sans-serif; color: #71717a; font-size: 0.85rem;">
-  <p>OnyxUi and all associated assets are licensed under the MIT License.</p>
+  <p>NOX and all associated assets are licensed under the MIT License.</p>
   <p>Maintained by slythnox</p>
 </div>

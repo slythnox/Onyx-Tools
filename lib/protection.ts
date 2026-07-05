@@ -1,5 +1,5 @@
 /**
- * OnyxUi Security & Code Protection Layer
+ * NOX Security & Code Protection Layer
  * Protects the source code from simple inspect-element, keyboard snooping, and developer tools.
  */
 

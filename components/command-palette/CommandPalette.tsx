@@ -162,7 +162,7 @@ export default function CommandPalette() {
             <span>↑↓ to navigate</span>
             <span>↵ to select</span>
           </div>
-          <div>OnyxUI Workspace</div>
+          <div>NOX Workspace</div>
         </div>
       </div>
     </Dialog>
