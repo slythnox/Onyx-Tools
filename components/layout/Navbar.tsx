@@ -14,7 +14,7 @@ export default function Navbar() {
         <div className="flex items-center gap-4">
           <Link to="/" className="flex items-center gap-2 group">
             <span className="font-mono text-sm font-bold tracking-widest text-white uppercase">
-              NOX
+              ONYX
             </span>
           </Link>
           <div className="w-px h-4 bg-zinc-800" />
@@ -43,7 +43,7 @@ export default function Navbar() {
         {/* Global actions: GitHub Link */}
         <div className="flex items-center gap-3">
           <a
-            href="https://github.com/slythnox/NOX-Tools"
+            href="https://github.com/slythnox/Onyx-Tools"
             target="_blank"
             rel="noopener noreferrer"
             className="p-1 text-zinc-400 hover:text-zinc-100 transition-colors"

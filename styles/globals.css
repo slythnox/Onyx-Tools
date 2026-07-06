@@ -404,3 +404,11 @@ input[type="range"]::-moz-range-thumb {
   border: 1px solid var(--bg-black) !important;
   box-shadow: none !important;
 }
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}

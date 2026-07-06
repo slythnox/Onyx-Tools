@@ -1,5 +1,5 @@
 {
-  "name": "nox",
+  "name": "onyx",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -16,13 +16,13 @@
   ],
   "author": "slythnox",
   "license": "MIT",
-  "homepage": "https://slythnox.github.io/NOX-Tools/",
+  "homepage": "https://slythnox.github.io/Onyx-Tools/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/slythnox/NOX-Tools.git"
+    "url": "https://github.com/slythnox/Onyx-Tools.git"
   },
   "bugs": {
-    "url": "https://github.com/slythnox/NOX-Tools/issues"
+    "url": "https://github.com/slythnox/Onyx-Tools/issues"
   },
   "scripts": {
     "dev": "vite",

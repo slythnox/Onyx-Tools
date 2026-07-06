@@ -1,5 +1,5 @@
 /**
- * NOX Security & Code Protection Layer
+ * ONYX Security & Code Protection Layer
  * Protects the source code from simple inspect-element, keyboard snooping, and developer tools.
  */
 
@@ -13,7 +13,7 @@ function showDevToolsWarning() {
   }
 
   warningOverlay = document.createElement('div');
-  warningOverlay.id = 'nox-devtools-warning';
+  warningOverlay.id = 'onyx-devtools-warning';
   warningOverlay.setAttribute('style', `
     position: fixed !important;
     top: 0 !important;
@@ -41,7 +41,7 @@ function showDevToolsWarning() {
         To protect source code integrity and ensure system security, developer tools are disabled in production.
       </p>
       <div style="font-size: 11px; font-family: monospace; color: #ef4444; border: 1px dashed rgba(239,68,68,0.3); background: rgba(239,68,68,0.05); padding: 10px; border-radius: 4px; display: inline-block;">
-        Please close Developer Tools to continue using NOX.
+        Please close Developer Tools to continue using ONYX.
       </div>
     </div>
   `;

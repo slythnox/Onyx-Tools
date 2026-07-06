@@ -66,7 +66,7 @@ export default function ToolWrapper() {
               to="/"
               className="text-[10px] text-zinc-500 hover:text-zinc-300 transition-colors font-normal cursor-pointer"
             >
-              by <span className="text-zinc-400 font-bold hover:text-zinc-200">NOX</span>
+              by <span className="text-zinc-400 font-bold hover:text-zinc-200">ONYX</span>
             </Link>
           </div>
 

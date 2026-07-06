@@ -89,7 +89,7 @@ export default function LandingPage() {
           <div className="flex-1 text-center md:text-left space-y-2">
             <h3 className="font-mono text-sm font-bold text-white">slythnox</h3>
             <p className="text-xs text-zinc-450 leading-relaxed max-w-2xl">
-              Software architect and designer. Creator of NOX. Building local-first developer utilities, minimal interfaces, and high-performance visual tools. Dedicated to creating polished workflows that run entirely in the browser, keeping your development data private and fast.
+              Software architect and designer. Creator of ONYX. Building local-first developer utilities, minimal interfaces, and high-performance visual tools. Dedicated to creating polished workflows that run entirely in the browser, keeping your development data private and fast.
             </p>
             <div className="flex justify-center md:justify-start gap-4 pt-1 text-[10px] font-mono text-zinc-500">
               <a href="https://github.com/slythnox" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-300 transition-colors">github.com/slythnox</a>

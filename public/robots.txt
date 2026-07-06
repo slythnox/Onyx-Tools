@@ -3,4 +3,4 @@ User-agent: *
 Allow: /
 
 # Link to sitemap
-Sitemap: https://slythnox.github.io/NOX-Tools/sitemap.xml
+Sitemap: https://slythnox.github.io/Onyx-Tools/sitemap.xml

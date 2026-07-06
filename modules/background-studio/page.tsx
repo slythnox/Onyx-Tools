@@ -47,6 +47,7 @@ export default function BackgroundStudio() {
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [activeExportTab, setActiveExportTab] = useState<'cli' | 'usage' | 'component' | 'css'>('usage');
   const [copied, setCopied] = useState(false);
+  const [showHeroOverlay, setShowHeroOverlay] = useState(true);
 
   const [canvasBg, setCanvasBg] = useState('#120f17');
   const [colors, setColors] = useState<string[]>(['#ff9ffc', '#5227ff']);
@@ -442,6 +443,12 @@ export default function BackgroundStudio() {
               </div>
             </div>
 
+            {/* Hero Overlay Toggle */}
+            <div className="flex items-center justify-between py-1 border-b border-zinc-900/60 pb-2">
+              <label className="text-[10px] font-mono text-zinc-400 font-bold uppercase tracking-wide">Hero Overlay</label>
+              <input type="checkbox" checked={showHeroOverlay} onChange={e => setShowHeroOverlay(e.target.checked)} className="cursor-pointer bg-zinc-900 border-zinc-800 rounded accent-violet-600" />
+            </div>
+
             {/* Multi-color list */}
             {showColorList && (
               <div className="space-y-2">
@@ -575,10 +582,77 @@ export default function BackgroundStudio() {
         {activeBg === 'laser' && <LaserFlow color={colors[0]||'#FF79C6'} wispDensity={lfWispDensity} flowSpeed={lfFlowSpeed} verticalSizing={lfVerticalSizing} horizontalSizing={lfHorizontalSizing} fogIntensity={lfFogIntensity} fogScale={lfFogScale} wispSpeed={lfWispSpeed} wispIntensity={lfWispIntensity} flowStrength={lfFlowStrength} decay={lfDecay} horizontalBeamOffset={lfHorizontalBeamOffset} verticalBeamOffset={lfVerticalBeamOffset} />}
         {activeBg === 'rays' && <LightRays raysOrigin={lrOrigin} raysColor={colors[0]||'#ffffff'} raysSpeed={lrSpeed} lightSpread={lrSpread} rayLength={lrLength} pulsating={lrPulsating} fadeDistance={lrFadeDistance} saturation={lrSaturation} followMouse={lrFollowMouse} mouseInfluence={lrMouseInfluence} noiseAmount={lrNoise} distortion={lrDistortion} />}
 
+        {/* Mock Hero Landing Page Overlay from Image Reference */}
+        {showHeroOverlay && (
+          <div className="absolute inset-0 flex flex-col justify-between p-6 md:p-8 z-[2] pointer-events-none select-none text-white">
+            {/* Header Navbar */}
+            <div className="w-full max-w-4xl mx-auto flex items-center justify-between bg-zinc-950/40 border border-zinc-800/50 backdrop-blur-md rounded-2xl px-5 py-3 pointer-events-auto select-none">
+              {/* Logo */}
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-zinc-200 animate-spin-slow shrink-0" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <ellipse cx="50" cy="50" rx="15" ry="40" stroke="currentColor" strokeWidth="6" transform="rotate(30 50 50)" />
+                  <ellipse cx="50" cy="50" rx="15" ry="40" stroke="currentColor" strokeWidth="6" transform="rotate(90 50 50)" />
+                  <ellipse cx="50" cy="50" rx="15" ry="40" stroke="currentColor" strokeWidth="6" transform="rotate(150 50 50)" />
+                  <circle cx="50" cy="50" r="6" fill="currentColor" />
+                </svg>
+                <span className="font-sans font-bold tracking-tight text-sm text-white">React Bits</span>
+              </div>
+              
+              {/* Menu Links */}
+              <div className="hidden sm:flex items-center gap-6">
+                <a href="#features" className="text-xs text-zinc-400 hover:text-white transition-colors">Features</a>
+                <a href="#about" className="text-xs text-zinc-400 hover:text-white transition-colors">About</a>
+              </div>
+              
+              {/* Action Button */}
+              <div>
+                <button className="px-4 py-1.5 bg-white text-black hover:bg-zinc-200 text-xs font-semibold rounded-full transition-all duration-150">
+                  Sign up
+                </button>
+              </div>
+            </div>
+
+            {/* Hero Main Content */}
+            <div className="w-full max-w-2xl mx-auto text-center my-auto flex flex-col items-center justify-center pointer-events-auto mt-16 sm:mt-0">
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-zinc-800/60 bg-zinc-950/40 backdrop-blur-sm text-[11px] mb-6">
+                <span className="bg-white text-black text-[9px] font-extrabold px-1.5 py-0.5 rounded-full leading-none">NEW</span>
+                <span className="text-zinc-350">Just shipped v2.0</span>
+              </div>
+              
+              {/* Headline */}
+              <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-tight mb-8 font-sans max-w-xl sm:max-w-2xl">
+                You have the power to reshape your own destiny
+              </h1>
+              
+              {/* CTA Buttons */}
+              <div className="flex items-center gap-3.5 justify-center">
+                <button className="px-6 py-2.5 bg-white text-black font-semibold rounded-full hover:bg-zinc-200 transition-colors text-xs sm:text-sm">
+                  Get started
+                </button>
+                <button className="px-6 py-2.5 bg-violet-600/30 hover:bg-violet-650/45 text-white font-semibold rounded-full border border-violet-500/50 backdrop-blur-sm transition-all text-xs sm:text-sm shadow-lg shadow-violet-950/20">
+                  Learn more
+                </button>
+              </div>
+            </div>
+
+            {/* Spacer */}
+            <div className="h-12 hidden sm:block" />
+          </div>
+        )}
+
         {/* Badge */}
         <div className="absolute top-4 left-[340px] bg-black/60 border border-zinc-800/80 backdrop-blur-md px-3 py-1.5 rounded-md text-[10px] font-mono text-zinc-350 font-bold uppercase select-none pointer-events-none">
           {PRESET_LABELS[activeBg]}
         </div>
+
+        {/* Floating Toggle Button */}
+        <button 
+          onClick={() => setShowHeroOverlay(!showHeroOverlay)} 
+          className="absolute top-4 right-4 bg-black/60 border border-zinc-800/80 hover:bg-zinc-900 hover:text-white backdrop-blur-md px-3 py-1.5 rounded-md text-[10px] font-mono text-zinc-350 font-bold uppercase select-none z-10 transition-colors cursor-pointer"
+        >
+          {showHeroOverlay ? 'Hide Hero Overlay' : 'Show Hero Overlay'}
+        </button>
       </div>
 
       {/* EXPORT MODAL */}
