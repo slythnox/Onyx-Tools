@@ -1,3 +1,4 @@
+import React from 'react';
 import { Code, Palette, Pipette, Layers, Type, LucideIcon } from 'lucide-react';
 
 export interface ToolMetadata {
