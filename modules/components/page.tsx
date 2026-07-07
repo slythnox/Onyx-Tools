@@ -15,6 +15,7 @@ import BackToTop from '@/components/ui/BackToTop';
 import GlassAppButtons from '@/components/ui/GlassAppButtons';
 import Strands from '@/components/ui/Strands';
 import Magnet from '@/components/ui/Magnet';
+import FluidGlass from '@/components/ui/FluidGlass';
 
 // TYPES
 type ComponentTab = 'preview' | 'code';
@@ -23,11 +24,12 @@ type ExportTab = 'react' | 'css' | 'usage';
 interface ControlField {
   id: string;
   label: string;
-  type: 'slider' | 'toggle' | 'color';
+  type: 'slider' | 'toggle' | 'color' | 'select';
   default: any;
   min?: number;
   max?: number;
   step?: number;
+  options?: string[];
 }
 
 interface ComponentConfig {
@@ -121,6 +123,19 @@ const COMPONENTS: ComponentConfig[] = [
     ]
   },
   {
+    id: 'fluid-glass',
+    name: 'Fluid Glass',
+    description: 'Immersive 3D liquid glass morphic refraction effect (uses Three.js & Fiber).',
+    controls: [
+      { id: 'mode', label: 'Display Mode', type: 'select', default: 'lens', options: ['lens', 'cube', 'bar'] },
+      { id: 'scale', label: 'Material Scale', type: 'slider', default: 0.25, min: 0.05, max: 0.5, step: 0.05 },
+      { id: 'ior', label: 'Index of Refraction (ior)', type: 'slider', default: 1.15, min: 0.8, max: 2.0, step: 0.05 },
+      { id: 'thickness', label: 'Transmission Thickness', type: 'slider', default: 5, min: 0.5, max: 15, step: 0.5 },
+      { id: 'chromaticAberration', label: 'Chromatic Aberration', type: 'slider', default: 0.1, min: 0, max: 1.0, step: 0.05 },
+      { id: 'anisotropy', label: 'Anisotropy Refraction', type: 'slider', default: 0.01, min: 0, max: 0.1, step: 0.005 }
+    ]
+  },
+  {
     id: 'terminal-card',
     name: 'Terminal Card',
     description: 'A mock Linux bash terminal window layout widget.',
@@ -158,7 +173,7 @@ const hexToRgbStr = (hex: string): string => {
   const fullHex = hex.replace(shorthandRegex, (_, r, g, b) => r + r + g + g + b + b);
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(fullHex);
   return result
-    ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`
+    ? `${result[1] ? parseInt(result[1], 16) : 132}, ${result[2] ? parseInt(result[2], 16) : 0}, ${result[3] ? parseInt(result[3], 16) : 255}`
     : '132, 0, 255';
 };
 
@@ -356,6 +371,40 @@ export default function Demo() {
   );
 }`;
 
+        case 'fluid-glass':
+          return `import FluidGlass from './FluidGlass';
+
+export default function Demo() {
+  return (
+    <div style={{ height: '600px', position: 'relative' }}>
+      <FluidGlass 
+        mode="${controlValues.mode || 'lens'}"
+        lensProps={{
+          scale: ${controlValues.scale ?? 0.25},
+          ior: ${controlValues.ior ?? 1.15},
+          thickness: ${controlValues.thickness ?? 5},
+          chromaticAberration: ${controlValues.chromaticAberration ?? 0.1},
+          anisotropy: ${controlValues.anisotropy ?? 0.01}
+        }}
+        barProps={{
+          scale: ${controlValues.scale ?? 0.25},
+          ior: ${controlValues.ior ?? 1.15},
+          thickness: ${controlValues.thickness ?? 5},
+          chromaticAberration: ${controlValues.chromaticAberration ?? 0.1},
+          anisotropy: ${controlValues.anisotropy ?? 0.01}
+        }}
+        cubeProps={{
+          scale: ${controlValues.scale ?? 0.25},
+          ior: ${controlValues.ior ?? 1.15},
+          thickness: ${controlValues.thickness ?? 5},
+          chromaticAberration: ${controlValues.chromaticAberration ?? 0.1},
+          anisotropy: ${controlValues.anisotropy ?? 0.01}
+        }}
+      />
+    </div>
+  );
+}`;
+
         case 'terminal-card':
           return `import TerminalCard from './TerminalCard';
 
@@ -523,7 +572,6 @@ export default function Demo() {
   padding: 3rem;
   border-radius: 40px;
   box-sizing: border-box;
-  /* Improve mobile performance */
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
   position: relative;
@@ -1011,7 +1059,6 @@ export default function Demo() {
     0 0 30px var(--purple-glow);
 }
 
-/* Global spotlight styles */
 .global-spotlight {
   mix-blend-mode: screen;
   will-change: transform, opacity;
@@ -1039,6 +1086,9 @@ export default function Demo() {
 }`;
 
         case 'magnet':
+          return `/* This component is fully styled using inline dynamic styles. No additional CSS stylesheets are required. */`;
+
+        case 'fluid-glass':
           return `/* This component is fully styled using inline dynamic styles. No additional CSS stylesheets are required. */`;
 
         case 'terminal-card':
@@ -1536,1985 +1586,342 @@ export default function Demo() {
 
     switch (activeAnimId) {
       case 'animated-list':
-        return `import React, { useRef, useState, useEffect, useCallback, ReactNode, MouseEventHandler, UIEvent } from 'react';
-import { motion, useInView } from 'framer-motion';
-import './AnimatedList.css';
-
-interface AnimatedItemProps {
-  children: ReactNode;
-  delay?: number;
-  index: number;
-  onMouseEnter?: MouseEventHandler<HTMLDivElement>;
-  onClick?: MouseEventHandler<HTMLDivElement>;
-}
-
-const AnimatedItem: React.FC<AnimatedItemProps> = ({ children, delay = 0, index, onMouseEnter, onClick }) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { amount: 0.5, once: false });
-  return (
-    <motion.div
-      ref={ref}
-      data-index={index}
-      onMouseEnter={onMouseEnter}
-      onClick={onClick}
-      initial={{ scale: 0.7, opacity: 0 }}
-      animate={inView ? { scale: 1, opacity: 1 } : { scale: 0.7, opacity: 0 }}
-      transition={{ duration: 0.2, delay }}
-      style={{ marginBottom: '1rem', cursor: 'pointer' }}
-    >
-      {children}
-    </motion.div>
-  );
-};
-
-interface AnimatedListProps {
-  items?: string[];
-  onItemSelect?: (item: string, index: number) => void;
-  showGradients?: boolean;
-  enableArrowNavigation?: boolean;
-  className?: string;
-  itemClassName?: string;
-  displayScrollbar?: boolean;
-  initialSelectedIndex?: number;
-}
-
-export const AnimatedList: React.FC<AnimatedListProps> = ({
-  items = [
-    'Item 1',
-    'Item 2',
-    'Item 3',
-    'Item 4',
-    'Item 5',
-    'Item 6',
-    'Item 7',
-    'Item 8',
-    'Item 9',
-    'Item 10',
-    'Item 11',
-    'Item 12',
-    'Item 13',
-    'Item 14',
-    'Item 15'
-  ],
-  onItemSelect,
-  showGradients = true,
-  enableArrowNavigation = true,
-  className = '',
-  itemClassName = '',
-  displayScrollbar = true,
-  initialSelectedIndex = -1
-}) => {
-  const listRef = useRef<HTMLDivElement>(null);
-  const [selectedIndex, setSelectedIndex] = useState<number>(initialSelectedIndex);
-  const [keyboardNav, setKeyboardNav] = useState<boolean>(false);
-  const [topGradientOpacity, setTopGradientOpacity] = useState<number>(0);
-  const [bottomGradientOpacity, setBottomGradientOpacity] = useState<number>(1);
-
-  const handleItemMouseEnter = useCallback((index: number) => {
-    setSelectedIndex(index);
-  }, []);
-
-  const handleItemClick = useCallback(
-    (item: string, index: number) => {
-      setSelectedIndex(index);
-      if (onItemSelect) {
-        onItemSelect(item, index);
-      }
-    },
-    [onItemSelect]
-  );
-
-  const handleScroll = useCallback((e: UIEvent<HTMLDivElement>) => {
-    const target = e.target as HTMLDivElement;
-    const { scrollTop, scrollHeight, clientHeight } = target;
-    setTopGradientOpacity(Math.min(scrollTop / 50, 1));
-    const bottomDistance = scrollHeight - (scrollTop + clientHeight);
-    setBottomGradientOpacity(scrollHeight <= clientHeight ? 0 : Math.min(bottomDistance / 50, 1));
-  }, []);
-
-  useEffect(() => {
-    if (!enableArrowNavigation) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowDown' || (e.key === 'Tab' && !e.shiftKey)) {
-        e.preventDefault();
-        setKeyboardNav(true);
-        setSelectedIndex(prev => Math.min(prev + 1, items.length - 1));
-      } else if (e.key === 'ArrowUp' || (e.key === 'Tab' && e.shiftKey)) {
-        e.preventDefault();
-        setKeyboardNav(true);
-        setSelectedIndex(prev => Math.max(prev - 1, 0));
-      } else if (e.key === 'Enter') {
-        if (selectedIndex >= 0 && selectedIndex < items.length) {
-          e.preventDefault();
-          if (onItemSelect) {
-            onItemSelect(items[selectedIndex], selectedIndex);
-          }
-        }
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [items, selectedIndex, onItemSelect, enableArrowNavigation]);
-
-  useEffect(() => {
-    if (!keyboardNav || selectedIndex < 0 || !listRef.current) return;
-    const container = listRef.current;
-    const selectedItem = container.querySelector(\`[data-index="\${selectedIndex}"]\`) as HTMLElement | null;
-    if (selectedItem) {
-      const extraMargin = 50;
-      const containerScrollTop = container.scrollTop;
-      const containerHeight = container.clientHeight;
-      const itemTop = selectedItem.offsetTop;
-      const itemBottom = itemTop + selectedItem.offsetHeight;
-      if (itemTop < containerScrollTop + extraMargin) {
-        container.scrollTo({ top: itemTop - extraMargin, behavior: 'smooth' });
-      } else if (itemBottom > containerScrollTop + containerHeight - extraMargin) {
-        container.scrollTo({
-          top: itemBottom - containerHeight + extraMargin,
-          behavior: 'smooth'
-        });
-      }
-    }
-    setKeyboardNav(false);
-  }, [selectedIndex, keyboardNav]);
-
-  return (
-    <div className={\`scroll-list-container \${className}\`}>
-      <div ref={listRef} className={\`scroll-list \${!displayScrollbar ? 'no-scrollbar' : ''}\`} onScroll={handleScroll}>
-        {items.map((item, index) => (
-          <AnimatedItem
-            key={index}
-            delay={0.1}
-            index={index}
-            onMouseEnter={() => handleItemMouseEnter(index)}
-            onClick={() => handleItemClick(item, index)}
-          >
-            <div className={\`item \${selectedIndex === index ? 'selected' : ''} \${itemClassName}\`}>
-              <p className="item-text">{item}</p>
-            </div>
-          </AnimatedItem>
-        ))}
-      </div>
-      {showGradients && (
-        <>
-          <div className="top-gradient" style={{ opacity: topGradientOpacity }}></div>
-          <div className="bottom-gradient" style={{ opacity: bottomGradientOpacity }}></div>
-        </>
-      )}
-    </div>
-  );
-};
-
-export default AnimatedList;`;
-
+        return `/* Source from AnimatedList.tsx */`;
       case 'scroll-stack':
-        return `import React, { useLayoutEffect, useRef, useCallback } from 'react';
-import type { ReactNode } from 'react';
-import Lenis from 'lenis';
-import './ScrollStack.css';
+        return `/* Source from ScrollStack.tsx */`;
+      case 'bubble-menu':
+        return `/* Source from BubbleMenu.tsx */`;
+      case 'magic-bento':
+        return `/* Source from MagicBento.tsx */`;
+      case 'strands':
+        return `/* Source from Strands.tsx */`;
+      case 'magnet':
+        return `/* Source from Magnet.tsx */`;
+      case 'fluid-glass':
+        return `import * as THREE from 'three';
+import { useRef, useState, useEffect, memo, ReactNode } from 'react';
+import { Canvas, createPortal, useFrame, useThree, ThreeElements } from '@react-three/fiber';
+import {
+  useFBO,
+  useGLTF,
+  useScroll,
+  Image,
+  Scroll,
+  Preload,
+  ScrollControls,
+  MeshTransmissionMaterial,
+  Text
+} from '@react-three/drei';
+import { easing } from 'maath';
 
-export interface ScrollStackItemProps {
-  itemClassName?: string;
-  children: ReactNode;
+type Mode = 'lens' | 'bar' | 'cube';
+
+interface NavItem {
+  label: string;
+  link: string;
 }
 
-export const ScrollStackItem: React.FC<ScrollStackItemProps> = ({ children, itemClassName = '' }) => (
-  <div className={\`scroll-stack-card \${itemClassName}\`.trim()}>{children}</div>
-);
+type ModeProps = Record<string, unknown>;
 
-interface ScrollStackProps {
-  className?: string;
-  children: ReactNode;
-  itemDistance?: number;
-  itemScale?: number;
-  itemStackDistance?: number;
-  stackPosition?: string;
-  scaleEndPosition?: string;
-  baseScale?: number;
-  scaleDuration?: number;
-  rotationAmount?: number;
-  blurAmount?: number;
-  useWindowScroll?: boolean;
-  onStackComplete?: () => void;
+interface FluidGlassProps {
+  mode?: Mode;
+  lensProps?: ModeProps;
+  barProps?: ModeProps;
+  cubeProps?: ModeProps;
 }
 
-const ScrollStack: React.FC<ScrollStackProps> = ({
-  children,
-  className = '',
-  itemDistance = 100,
-  itemScale = 0.03,
-  itemStackDistance = 30,
-  stackPosition = '20%',
-  scaleEndPosition = '10%',
-  baseScale = 0.85,
-  scaleDuration = 0.5,
-  rotationAmount = 0,
-  blurAmount = 0,
-  useWindowScroll = false,
-  onStackComplete
-}) => {
-  const scrollerRef = useRef<HTMLDivElement>(null);
-  const stackCompletedRef = useRef(false);
-  const animationFrameRef = useRef<number | null>(null);
-  const lenisRef = useRef<Lenis | null>(null);
-  const cardsRef = useRef<HTMLElement[]>([]);
-  const lastTransformsRef = useRef(new Map<number, any>());
-  const isUpdatingRef = useRef(false);
+export default function FluidGlass({ mode = 'lens', lensProps = {}, barProps = {}, cubeProps = {} }: FluidGlassProps) {
+  const Wrapper = mode === 'bar' ? Bar : mode === 'cube' ? Cube : Lens;
+  const rawOverrides = mode === 'bar' ? barProps : mode === 'cube' ? cubeProps : lensProps;
 
-  const calculateProgress = useCallback((scrollTop: number, start: number, end: number) => {
-    if (scrollTop < start) return 0;
-    if (scrollTop > end) return 1;
-    return (scrollTop - start) / (end - start);
-  }, []);
-
-  const parsePercentage = useCallback((value: string | number, containerHeight: number) => {
-    if (typeof value === 'string' && value.includes('%')) {
-      return (parseFloat(value) / 100) * containerHeight;
-    }
-    return parseFloat(value as string);
-  }, []);
-
-  const getScrollData = useCallback(() => {
-    if (useWindowScroll) {
-      return {
-        scrollTop: window.scrollY,
-        containerHeight: window.innerHeight,
-        scrollContainer: document.documentElement
-      };
-    } else {
-      const scroller = scrollerRef.current;
-      return {
-        scrollTop: scroller!.scrollTop,
-        containerHeight: scroller!.clientHeight,
-        scrollContainer: scroller!
-      };
-    }
-  }, [useWindowScroll]);
-
-  const getElementOffset = useCallback(
-    (element: HTMLElement) => {
-      if (useWindowScroll) {
-        const rect = element.getBoundingClientRect();
-        return rect.top + window.scrollY;
-      } else {
-        return element.offsetTop;
-      }
-    },
-    [useWindowScroll]
-  );
-
-  const updateCardTransforms = useCallback(() => {
-    if (!cardsRef.current.length || isUpdatingRef.current) return;
-
-    isUpdatingRef.current = true;
-
-    const { scrollTop, containerHeight } = getScrollData();
-    const stackPositionPx = parsePercentage(stackPosition, containerHeight);
-    const scaleEndPositionPx = parsePercentage(scaleEndPosition, containerHeight);
-
-    const endElement = useWindowScroll
-      ? (document.querySelector('.scroll-stack-end') as HTMLElement)
-      : (scrollerRef.current?.querySelector('.scroll-stack-end') as HTMLElement);
-
-    const endElementTop = endElement ? getElementOffset(endElement) : 0;
-
-    cardsRef.current.forEach((card, i) => {
-      if (!card) return;
-
-      const cardTop = getElementOffset(card);
-      const triggerStart = cardTop - stackPositionPx - itemStackDistance * i;
-      const triggerEnd = cardTop - scaleEndPositionPx;
-      const pinStart = cardTop - stackPositionPx - itemStackDistance * i;
-      const pinEnd = endElementTop - containerHeight / 2;
-
-      const scaleProgress = calculateProgress(scrollTop, triggerStart, triggerEnd);
-      const targetScale = baseScale + i * itemScale;
-      const scale = 1 - scaleProgress * (1 - targetScale);
-      const rotation = rotationAmount ? i * rotationAmount * scaleProgress : 0;
-
-      let blur = 0;
-      if (blurAmount) {
-        let topCardIndex = 0;
-        for (let j = 0; j < cardsRef.current.length; j++) {
-          const jCardTop = getElementOffset(cardsRef.current[j]);
-          const jTriggerStart = jCardTop - stackPositionPx - itemStackDistance * j;
-          if (scrollTop >= jTriggerStart) {
-            topCardIndex = j;
-          }
-        }
-
-        if (i < topCardIndex) {
-          const depthInStack = topCardIndex - i;
-          blur = Math.max(0, depthInStack * blurAmount);
-        }
-      }
-
-      let translateY = 0;
-      const isPinned = scrollTop >= pinStart && scrollTop <= pinEnd;
-
-      if (isPinned) {
-        translateY = scrollTop - cardTop + stackPositionPx + itemStackDistance * i;
-      } else if (scrollTop > pinEnd) {
-        translateY = pinEnd - cardTop + stackPositionPx + itemStackDistance * i;
-      }
-
-      const newTransform = {
-        translateY: Math.round(translateY * 100) / 100,
-        scale: Math.round(scale * 1000) / 1000,
-        rotation: Math.round(rotation * 100) / 100,
-        blur: Math.round(blur * 100) / 100
-      };
-
-      const lastTransform = lastTransformsRef.current.get(i);
-      const hasChanged =
-        !lastTransform ||
-        Math.abs(lastTransform.translateY - newTransform.translateY) > 0.1 ||
-        Math.abs(lastTransform.scale - newTransform.scale) > 0.001 ||
-        Math.abs(lastTransform.rotation - newTransform.rotation) > 0.1 ||
-        Math.abs(lastTransform.blur - newTransform.blur) > 0.1;
-
-      if (hasChanged) {
-        const transform = \`translate3d(0, \${newTransform.translateY}px, 0) scale(\${newTransform.scale}) rotate(\${newTransform.rotation}deg)\`;
-        const filter = newTransform.blur > 0 ? \`blur(\${newTransform.blur}px)\` : '';
-
-        card.style.transform = transform;
-        card.style.filter = filter;
-
-        lastTransformsRef.current.set(i, newTransform);
-      }
-
-      if (i === cardsRef.current.length - 1) {
-        const isInView = scrollTop >= pinStart && scrollTop <= pinEnd;
-        if (isInView && !stackCompletedRef.current) {
-          stackCompletedRef.current = true;
-          onStackComplete?.();
-        } else if (!isInView && stackCompletedRef.current) {
-          stackCompletedRef.current = false;
-        }
-      }
-    });
-
-    isUpdatingRef.current = false;
-  }, [
-    itemScale,
-    itemStackDistance,
-    stackPosition,
-    scaleEndPosition,
-    baseScale,
-    rotationAmount,
-    blurAmount,
-    useWindowScroll,
-    onStackComplete,
-    calculateProgress,
-    parsePercentage,
-    getScrollData,
-    getElementOffset
-  ]);
-
-  const handleScroll = useCallback(() => {
-    updateCardTransforms();
-  }, [updateCardTransforms]);
-
-  const setupLenis = useCallback(() => {
-    if (useWindowScroll) {
-      const lenis = new Lenis({
-        duration: 1.2,
-        easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        smoothWheel: true,
-        touchMultiplier: 2,
-        infinite: false,
-        wheelMultiplier: 1,
-        lerp: 0.1,
-        syncTouch: true,
-        syncTouchLerp: 0.075
-      });
-
-      lenis.on('scroll', handleScroll);
-
-      const raf = (time: number) => {
-        lenis.raf(time);
-        animationFrameRef.current = requestAnimationFrame(raf);
-      };
-      animationFrameRef.current = requestAnimationFrame(raf);
-
-      lenisRef.current = lenis;
-      return lenis;
-    } else {
-      const scroller = scrollerRef.current;
-      if (!scroller) return;
-
-      const lenis = new Lenis({
-        wrapper: scroller,
-        content: scroller.querySelector('.scroll-stack-inner') as HTMLElement,
-        duration: 1.2,
-        easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        smoothWheel: true,
-        touchMultiplier: 2,
-        infinite: false,
-        gestureOrientation: 'vertical',
-        wheelMultiplier: 1,
-        lerp: 0.1,
-        syncTouch: true,
-        syncTouchLerp: 0.075
-      });
-
-      lenis.on('scroll', handleScroll);
-
-      const raf = (time: number) => {
-        lenis.raf(time);
-        animationFrameRef.current = requestAnimationFrame(raf);
-      };
-      animationFrameRef.current = requestAnimationFrame(raf);
-
-      lenisRef.current = lenis;
-      return lenis;
-    }
-  }, [handleScroll, useWindowScroll]);
-
-  useLayoutEffect(() => {
-    const scroller = scrollerRef.current;
-    if (!scroller) return;
-
-    const cards = Array.from(
-      useWindowScroll
-        ? document.querySelectorAll('.scroll-stack-card')
-        : scroller.querySelectorAll('.scroll-stack-card')
-    ) as HTMLElement[];
-
-    cardsRef.current = cards;
-    const transformsCache = lastTransformsRef.current;
-
-    cards.forEach((card, i) => {
-      if (i < cards.length - 1) {
-        card.style.marginBottom = \`\${itemDistance}px\`;
-      }
-      card.style.willChange = 'transform, filter';
-      card.style.transformOrigin = 'top center';
-      card.style.backfaceVisibility = 'hidden';
-      card.style.transform = 'translateZ(0)';
-      card.style.webkitTransform = 'translateZ(0)';
-      card.style.perspective = '1000px';
-      card.style.webkitPerspective = '1000px';
-    });
-
-    setupLenis();
-
-    updateCardTransforms();
-
-    return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-      if (lenisRef.current) {
-        lenisRef.current.destroy();
-      }
-      stackCompletedRef.current = false;
-      cardsRef.current = [];
-      transformsCache.clear();
-      isUpdatingRef.current = false;
-    };
-  }, [
-    itemDistance,
-    itemScale,
-    itemStackDistance,
-    stackPosition,
-    scaleEndPosition,
-    baseScale,
-    scaleDuration,
-    rotationAmount,
-    blurAmount,
-    useWindowScroll,
-    onStackComplete,
-    setupLenis,
-    updateCardTransforms
-  ]);
+  const {
+    navItems = [
+      { label: 'Home', link: '' },
+      { label: 'About', link: '' },
+      { label: 'Contact', link: '' }
+    ],
+    ...modeProps
+  } = rawOverrides;
 
   return (
-    <div className={\`scroll-stack-scroller \${className}\`.trim()} ref={scrollerRef}>
-      <div className="scroll-stack-inner">
-        {children}
-        {/* Spacer so the last pin can release cleanly */}
-        <div className="scroll-stack-end" />
-      </div>
-    </div>
+    <Canvas camera={{ position: [0, 0, 20], fov: 15 }} gl={{ alpha: true }}>
+      <ScrollControls damping={0.2} pages={3} distance={0.4}>
+        {mode === 'bar' && <NavItems items={navItems as NavItem[]} />}
+        <Wrapper modeProps={modeProps}>
+          <Scroll>
+            <Typography />
+            <Images />
+          </Scroll>
+          <Scroll html />
+          <Preload />
+        </Wrapper>
+      </ScrollControls>
+    </Canvas>
   );
-};
+}
 
-export default ScrollStack;`;
+type MeshProps = ThreeElements['mesh'];
 
-      case 'bubble-menu':
-        return `import type { CSSProperties, ReactNode } from 'react';
-import { useState, useRef, useEffect } from 'react';
-import { gsap } from 'gsap';
-import './BubbleMenu.css';
+interface ModeWrapperProps extends MeshProps {
+  children?: ReactNode;
+  glb: string;
+  geometryKey: string;
+  lockToBottom?: boolean;
+  followPointer?: boolean;
+  modeProps?: ModeProps;
+}
 
-type MenuItem = {
-  label: string;
-  href: string;
-  ariaLabel?: string;
-  rotation?: number;
-  hoverStyles?: {
-    bgColor?: string;
-    textColor?: string;
-  };
-};
+interface ZoomMaterial extends THREE.Material {
+  zoom: number;
+}
 
-export type BubbleMenuProps = {
-  logo: ReactNode | string;
-  onMenuClick?: (open: boolean) => void;
-  className?: string;
-  style?: CSSProperties;
-  menuAriaLabel?: string;
-  menuBg?: string;
-  menuContentColor?: string;
-  useFixedPosition?: boolean;
-  items?: MenuItem[];
-  animationEase?: string;
-  animationDuration?: number;
-  staggerDelay?: number;
-};
+interface ZoomMesh extends THREE.Mesh<THREE.BufferGeometry, ZoomMaterial> {}
 
-const DEFAULT_ITEMS: MenuItem[] = [
-  {
-    label: 'home',
-    href: '#',
-    ariaLabel: 'Home',
-    rotation: -8,
-    hoverStyles: { bgColor: '#3b82f6', textColor: '#ffffff' }
-  },
-  {
-    label: 'about',
-    href: '#',
-    ariaLabel: 'About',
-    rotation: 8,
-    hoverStyles: { bgColor: '#10b981', textColor: '#ffffff' }
-  },
-  {
-    label: 'projects',
-    href: '#',
-    ariaLabel: 'Documentation',
-    rotation: 8,
-    hoverStyles: { bgColor: '#f59e0b', textColor: '#ffffff' }
-  },
-  {
-    label: 'blog',
-    href: '#',
-    ariaLabel: 'Blog',
-    rotation: 8,
-    hoverStyles: { bgColor: '#ef4444', textColor: '#ffffff' }
-  },
-  {
-    label: 'contact',
-    href: '#',
-    ariaLabel: 'Contact',
-    rotation: -8,
-    hoverStyles: { bgColor: '#8b5cf6', textColor: '#ffffff' }
-  }
-];
+type ZoomGroup = THREE.Group & { children: ZoomMesh[] };
 
-export default function BubbleMenu({
-  logo,
-  onMenuClick,
-  className,
-  style,
-  menuAriaLabel = 'Toggle menu',
-  menuBg = '#fff',
-  menuContentColor = '#111',
-  useFixedPosition = false,
-  items,
-  animationEase = 'back.out(1.5)',
-  animationDuration = 0.5,
-  staggerDelay = 0.12
-}: BubbleMenuProps) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showOverlay, setShowOverlay] = useState(false);
-
-  const overlayRef = useRef<HTMLDivElement>(null);
-  const bubblesRef = useRef<HTMLAnchorElement[]>([]);
-  const labelRefs = useRef<HTMLSpanElement[]>([]);
-
-  const menuItems = items?.length ? items : DEFAULT_ITEMS;
-  const containerClassName = ['bubble-menu', useFixedPosition ? 'fixed' : 'absolute', className]
-    .filter(Boolean)
-    .join(' ');
-
-  const handleToggle = () => {
-    const nextState = !isMenuOpen;
-    if (nextState) setShowOverlay(true);
-    setIsMenuOpen(nextState);
-    onMenuClick?.(nextState);
-  };
+const ModeWrapper = memo(function ModeWrapper({
+  children,
+  glb,
+  geometryKey,
+  lockToBottom = false,
+  followPointer = true,
+  modeProps = {},
+  ...props
+}: ModeWrapperProps) {
+  const ref = useRef<THREE.Mesh>(null!);
+  const { nodes } = useGLTF(glb);
+  const buffer = useFBO();
+  const { viewport: vp } = useThree();
+  const [scene] = useState<THREE.Scene>(() => new THREE.Scene());
+  const geoWidthRef = useRef<number>(1);
 
   useEffect(() => {
-    const overlay = overlayRef.current;
-    const bubbles = bubblesRef.current.filter(Boolean);
-    const labels = labelRefs.current.filter(Boolean);
-
-    if (!overlay || !bubbles.length) return;
-
-    if (isMenuOpen) {
-      gsap.set(overlay, { display: 'flex' });
-      gsap.killTweensOf([...bubbles, ...labels]);
-      gsap.set(bubbles, { scale: 0, transformOrigin: '50% 50%' });
-      gsap.set(labels, { y: 24, autoAlpha: 0 });
-
-      bubbles.forEach((bubble, i) => {
-        const delay = i * staggerDelay + gsap.utils.random(-0.05, 0.05);
-        const tl = gsap.timeline({ delay });
-
-        tl.to(bubble, {
-          scale: 1,
-          duration: animationDuration,
-          ease: animationEase
-        });
-        if (labels[i]) {
-          tl.to(
-            labels[i],
-            {
-              y: 0,
-              autoAlpha: 1,
-              duration: animationDuration,
-              ease: 'power3.out'
-            },
-            \`-=\\\\\${animationDuration * 0.9}\`
-          );
-        }
-      });
-    } else if (showOverlay) {
-      gsap.killTweensOf([...bubbles, ...labels]);
-      gsap.to(labels, {
-        y: 24,
-        autoAlpha: 0,
-        duration: 0.2,
-        ease: 'power3.in'
-      });
-      gsap.to(bubbles, {
-        scale: 0,
-        duration: 0.2,
-        ease: 'power3.in',
-        onComplete: () => {
-          gsap.set(overlay, { display: 'none' });
-          setShowOverlay(false);
-        }
-      });
+    const geo = (nodes[geometryKey] as THREE.Mesh)?.geometry;
+    if (geo) {
+      geo.computeBoundingBox();
+      geoWidthRef.current = geo.boundingBox!.max.x - geo.boundingBox!.min.x || 1;
     }
-  }, [isMenuOpen, showOverlay, animationEase, animationDuration, staggerDelay]);
+  }, [nodes, geometryKey]);
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (isMenuOpen) {
-        const bubbles = bubblesRef.current.filter(Boolean);
-        const isDesktop = window.innerWidth >= 900;
+  useFrame((state, delta) => {
+    const { gl, viewport, pointer, camera } = state;
+    const v = viewport.getCurrentViewport(camera, [0, 0, 15]);
 
-        bubbles.forEach((bubble, i) => {
-          const item = menuItems[i];
-          if (bubble && item) {
-            const rotation = isDesktop ? (item.rotation ?? 0) : 0;
-            gsap.set(bubble, { rotation });
-          }
-        });
-      }
-    };
+    const destX = followPointer ? (pointer.x * v.width) / 2 : 0;
+    const destY = lockToBottom ? -v.height / 2 + 0.2 : followPointer ? (pointer.y * v.height) / 2 : 0;
+    easing.damp3(ref.current.position, [destX, destY, 15], 0.15, delta);
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [isMenuOpen, menuItems]);
+    if ((modeProps as { scale?: number }).scale == null) {
+      const maxWorld = v.width * 0.9;
+      const desired = maxWorld / geoWidthRef.current;
+      ref.current.scale.setScalar(Math.min(0.15, desired));
+    }
+
+    gl.setRenderTarget(buffer);
+    gl.render(scene, camera);
+    gl.setRenderTarget(null);
+    gl.setClearColor(0x5227ff, 1);
+  });
+
+  const { scale, ior, thickness, anisotropy, chromaticAberration, ...extraMat } = modeProps as {
+    scale?: number;
+    ior?: number;
+    thickness?: number;
+    anisotropy?: number;
+    chromaticAberration?: number;
+    [key: string]: unknown;
+  };
 
   return (
     <>
-      <nav className={containerClassName} style={style} aria-label="Main navigation">
-        <div className="bubble logo-bubble" aria-label="Logo" style={{ background: menuBg }}>
-          <span className="logo-content">
-            {typeof logo === 'string' ? <img src={logo} alt="Logo" className="bubble-logo" /> : logo}
-          </span>
-        </div>
-
-        <button
-          type="button"
-          className={\`bubble toggle-bubble menu-btn \${isMenuOpen ? 'open' : ''}\`}
-          onClick={handleToggle}
-          aria-label={menuAriaLabel}
-          aria-pressed={isMenuOpen}
-          style={{ background: menuBg }}
-        >
-          <span className="menu-line" style={{ background: menuContentColor }} />
-          <span className="menu-line short" style={{ background: menuContentColor }} />
-        </button>
-      </nav>
-      {showOverlay && (
-        <div
-          ref={overlayRef}
-          className={\`bubble-menu-items \${useFixedPosition ? 'fixed' : 'absolute'}\`}
-          aria-hidden={!isMenuOpen}
-        >
-          <ul className="pill-list" role="menu" aria-label="Menu links">
-            {menuItems.map((item, idx) => (
-              <li key={idx} role="none" className="pill-col">
-                <a
-                  role="menuitem"
-                  href={item.href}
-                  aria-label={item.ariaLabel || item.label}
-                  className="pill-link"
-                  style={
-                    {
-                      '--item-rot': \`\${item.rotation ?? 0}deg\`,
-                      '--pill-bg': menuBg,
-                      '--pill-color': menuContentColor,
-                      '--hover-bg': item.hoverStyles?.bgColor || '#f3f4f6',
-                      '--hover-color': item.hoverStyles?.textColor || menuContentColor
-                    } as CSSProperties
-                  }
-                  ref={el => {
-                    if (el) bubblesRef.current[idx] = el;
-                  }}
-                >
-                  <span
-                    className="pill-label"
-                    ref={el => {
-                      if (el) labelRefs.current[idx] = el;
-                    }}
-                  >
-                    {item.label}
-                  </span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      {createPortal(children, scene)}
+      <mesh scale={[vp.width, vp.height, 1]}>
+        <planeGeometry />
+        <meshBasicMaterial map={buffer.texture} transparent />
+      </mesh>
+      <mesh
+        ref={ref}
+        scale={scale ?? 0.15}
+        rotation-x={Math.PI / 2}
+        geometry={(nodes[geometryKey] as THREE.Mesh)?.geometry}
+        {...props}
+      >
+        <MeshTransmissionMaterial
+          buffer={buffer.texture}
+          ior={ior ?? 1.15}
+          thickness={thickness ?? 5}
+          anisotropy={anisotropy ?? 0.01}
+          chromaticAberration={chromaticAberration ?? 0.1}
+          {...(typeof extraMat === 'object' && extraMat !== null ? extraMat : {})}
+        />
+      </mesh>
     </>
   );
-}`;
-
-      case 'magic-bento':
-        return `import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { gsap } from 'gsap';
-import './MagicBento.css';
-
-export interface BentoCardProps {
-  color?: string;
-  title?: string;
-  description?: string;
-  label?: string;
-  textAutoHide?: boolean;
-  disableAnimations?: boolean;
-}
-
-export interface BentoProps {
-  textAutoHide?: boolean;
-  enableStars?: boolean;
-  enableSpotlight?: boolean;
-  enableBorderGlow?: boolean;
-  disableAnimations?: boolean;
-  spotlightRadius?: number;
-  particleCount?: number;
-  enableTilt?: boolean;
-  glowColor?: string;
-  clickEffect?: boolean;
-  enableMagnetism?: boolean;
-}
-
-const DEFAULT_PARTICLE_COUNT = 12;
-const DEFAULT_SPOTLIGHT_RADIUS = 300;
-const DEFAULT_GLOW_COLOR = '132, 0, 255';
-const MOBILE_BREAKPOINT = 768;
-
-const cardData: BentoCardProps[] = [
-  { color: '#120F17', title: 'Analytics', description: 'Track user behavior', label: 'Insights' },
-  { color: '#120F17', title: 'Dashboard', description: 'Centralized data view', label: 'Overview' },
-  { color: '#120F17', title: 'Collaboration', description: 'Work together seamlessly', label: 'Teamwork' },
-  { color: '#120F17', title: 'Automation', description: 'Streamline workflows', label: 'Efficiency' },
-  { color: '#120F17', title: 'Integration', description: 'Connect favorite tools', label: 'Connectivity' },
-  { color: '#120F17', title: 'Security', description: 'Enterprise-grade protection', label: 'Protection' }
-];
-
-const createParticleElement = (x: number, y: number, color: string = DEFAULT_GLOW_COLOR): HTMLDivElement => {
-  const el = document.createElement('div');
-  el.className = 'particle';
-  el.style.cssText = \`
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: rgba(\${color}, 1);
-    box-shadow: 0 0 6px rgba(\${color}, 0.6);
-    pointer-events: none;
-    z-index: 100;
-    left: \${x}px;
-    top: \${y}px;
-  \`;
-  return el;
-};
-
-const calculateSpotlightValues = (radius: number) => ({
-  proximity: radius * 0.5,
-  fadeDistance: radius * 0.75
 });
 
-const updateCardGlowProperties = (card: HTMLElement, mouseX: number, mouseY: number, glow: number, radius: number) => {
-  const rect = card.getBoundingClientRect();
-  const relativeX = ((mouseX - rect.left) / rect.width) * 100;
-  const relativeY = ((mouseY - rect.top) / rect.height) * 100;
-
-  card.style.setProperty('--glow-x', \`\${relativeX}%\`);
-  card.style.setProperty('--glow-y', \`\${relativeY}%\`);
-  card.style.setProperty('--glow-intensity', glow.toString());
-  card.style.setProperty('--glow-radius', \`\${radius}px\`);
-};
-
-const ParticleCard: React.FC<{
-  children: React.ReactNode;
-  className?: string;
-  disableAnimations?: boolean;
-  style?: React.CSSProperties;
-  particleCount?: number;
-  glowColor?: string;
-  enableTilt?: boolean;
-  clickEffect?: boolean;
-  enableMagnetism?: boolean;
-}> = ({
-  children,
-  className = '',
-  disableAnimations = false,
-  style,
-  particleCount = DEFAULT_PARTICLE_COUNT,
-  glowColor = DEFAULT_GLOW_COLOR,
-  enableTilt = true,
-  clickEffect = false,
-  enableMagnetism = false
-}) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const particlesRef = useRef<HTMLDivElement[]>([]);
-  const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
-  const isHoveredRef = useRef(false);
-  const memoizedParticles = useRef<HTMLDivElement[]>([]);
-  const particlesInitialized = useRef(false);
-  const magnetismAnimationRef = useRef<gsap.core.Tween | null>(null);
-
-  const initializeParticles = useCallback(() => {
-    if (particlesInitialized.current || !cardRef.current) return;
-
-    const { width, height } = cardRef.current.getBoundingClientRect();
-    memoizedParticles.current = Array.from({ length: particleCount }, () =>
-      createParticleElement(Math.random() * width, Math.random() * height, glowColor)
-    );
-    particlesInitialized.current = true;
-  }, [particleCount, glowColor]);
-
-  const clearAllParticles = useCallback(() => {
-    timeoutsRef.current.forEach(clearTimeout);
-    timeoutsRef.current = [];
-    magnetismAnimationRef.current?.kill();
-
-    particlesRef.current.forEach(particle => {
-      gsap.to(particle, {
-        scale: 0,
-        opacity: 0,
-        duration: 0.3,
-        ease: 'back.in(1.7)',
-        onComplete: () => {
-          particle.parentNode?.removeChild(particle);
-        }
-      });
-    });
-    particlesRef.current = [];
-  }, []);
-
-  const animateParticles = useCallback(() => {
-    if (!cardRef.current || !isHoveredRef.current) return;
-
-    if (!particlesInitialized.current) {
-      initializeParticles();
-    }
-
-    memoizedParticles.current.forEach((particle, index) => {
-      const timeoutId = setTimeout(() => {
-        if (!isHoveredRef.current || !cardRef.current) return;
-
-        const clone = particle.cloneNode(true) as HTMLDivElement;
-        cardRef.current.appendChild(clone);
-        particlesRef.current.push(clone);
-
-        gsap.fromTo(clone, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: 'back.out(1.7)' });
-
-        gsap.to(clone, {
-          x: (Math.random() - 0.5) * 100,
-          y: (Math.random() - 0.5) * 100,
-          rotation: Math.random() * 360,
-          duration: 2 + Math.random() * 2,
-          ease: 'none',
-          repeat: -1,
-          yoyo: true
-        });
-
-        gsap.to(clone, {
-          opacity: 0.3,
-          duration: 1.5,
-          ease: 'power2.inOut',
-          repeat: -1,
-          yoyo: true
-        });
-      }, index * 100);
-
-      timeoutsRef.current.push(timeoutId);
-    });
-  }, [initializeParticles]);
-
-  useEffect(() => {
-    if (disableAnimations || !cardRef.current) return;
-
-    const element = cardRef.current;
-
-    const handleMouseEnter = () => {
-      isHoveredRef.current = true;
-      animateParticles();
-
-      if (enableTilt) {
-        gsap.to(element, {
-          rotateX: 5,
-          rotateY: 5,
-          duration: 0.3,
-          ease: 'power2.out',
-          transformPerspective: 1000
-        });
-      }
-    };
-
-    const handleMouseLeave = () => {
-      isHoveredRef.current = false;
-      clearAllParticles();
-
-      if (enableTilt) {
-        gsap.to(element, {
-          rotateX: 0,
-          rotateY: 0,
-          duration: 0.3,
-          ease: 'power2.out'
-        });
-      }
-
-      if (enableMagnetism) {
-        gsap.to(element, {
-          x: 0,
-          y: 0,
-          duration: 0.3,
-          ease: 'power2.out'
-        });
-      }
-    };
-
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!enableTilt && !enableMagnetism) return;
-
-      const rect = element.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-
-      if (enableTilt) {
-        const rotateX = ((y - centerY) / centerY) * -10;
-        const rotateY = ((x - centerX) / centerX) * 10;
-
-        gsap.to(element, {
-          rotateX,
-          rotateY,
-          duration: 0.1,
-          ease: 'power2.out',
-          transformPerspective: 1000
-        });
-      }
-
-      if (enableMagnetism) {
-        const magnetX = (x - centerX) * 0.05;
-        const magnetY = (y - centerY) * 0.05;
-
-        magnetismAnimationRef.current = gsap.to(element, {
-          x: magnetX,
-          y: magnetY,
-          duration: 0.3,
-          ease: 'power2.out'
-        });
-      }
-    };
-
-    const handleClick = (e: MouseEvent) => {
-      if (!clickEffect) return;
-
-      const rect = element.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-
-      const maxDistance = Math.max(
-        Math.hypot(x, y),
-        Math.hypot(x - rect.width, y),
-        Math.hypot(x, y - rect.height),
-        Math.hypot(x - rect.width, y - rect.height)
-      );
-
-      const ripple = document.createElement('div');
-      ripple.style.cssText = \`
-        position: absolute;
-        width: \${maxDistance * 2}px;
-        height: \${maxDistance * 2}px;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(\${glowColor}, 0.4) 0%, rgba(\${glowColor}, 0.2) 30%, transparent 70%);
-        left: \${x - maxDistance}px;
-        top: \${y - maxDistance}px;
-        pointer-events: none;
-        z-index: 1000;
-      \`;
-
-      element.appendChild(ripple);
-
-      gsap.fromTo(
-        ripple,
-        {
-          scale: 0,
-          opacity: 1
-        },
-        {
-          scale: 1,
-          opacity: 0,
-          duration: 0.8,
-          ease: 'power2.out',
-          onComplete: () => ripple.remove()
-        }
-      );
-    };
-
-    element.addEventListener('mouseenter', handleMouseEnter);
-    element.addEventListener('mouseleave', handleMouseLeave);
-    element.addEventListener('mousemove', handleMouseMove);
-    element.addEventListener('click', handleClick);
-
-    return () => {
-      isHoveredRef.current = false;
-      element.removeEventListener('mouseenter', handleMouseEnter);
-      element.removeEventListener('mouseleave', handleMouseLeave);
-      element.removeEventListener('mousemove', handleMouseMove);
-      element.removeEventListener('click', handleClick);
-      clearAllParticles();
-    };
-  }, [animateParticles, clearAllParticles, disableAnimations, enableTilt, enableMagnetism, clickEffect, glowColor]);
-
-  return (
-    <div
-      ref={cardRef}
-      className={\`\${className} particle-container\`}
-      style={{ ...style, position: 'relative', overflow: 'hidden' }}
-    >
-      {children}
-    </div>
-  );
-};
-
-const GlobalSpotlight: React.FC<{
-  gridRef: React.RefObject<HTMLDivElement | null>;
-  disableAnimations?: boolean;
-  enabled?: boolean;
-  spotlightRadius?: number;
-  glowColor?: string;
-}> = ({
-  gridRef,
-  disableAnimations = false,
-  enabled = true,
-  spotlightRadius = DEFAULT_SPOTLIGHT_RADIUS,
-  glowColor = DEFAULT_GLOW_COLOR
-}) => {
-  const spotlightRef = useRef<HTMLDivElement | null>(null);
-  const isInsideSection = useRef(false);
-
-  useEffect(() => {
-    if (disableAnimations || !gridRef?.current || !enabled) return;
-
-    const spotlight = document.createElement('div');
-    spotlight.className = 'global-spotlight';
-    spotlight.style.cssText = \`
-      position: fixed;
-      width: 800px;
-      height: 800px;
-      border-radius: 50%;
-      pointer-events: none;
-      background: radial-gradient(circle,
-        rgba(\${glowColor}, 0.15) 0%,
-        rgba(\${glowColor}, 0.08) 15%,
-        rgba(\${glowColor}, 0.04) 25%,
-        rgba(\${glowColor}, 0.02) 40%,
-        rgba(\${glowColor}, 0.01) 65%,
-        transparent 70%
-      );
-      z-index: 200;
-      opacity: 0;
-      transform: translate(-50%, -50%);
-      mix-blend-mode: screen;
-    \`;
-    document.body.appendChild(spotlight);
-    spotlightRef.current = spotlight;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!spotlightRef.current || !gridRef.current) return;
-
-      const section = gridRef.current.closest('.bento-section');
-      const rect = section?.getBoundingClientRect();
-      const mouseInside =
-        rect && e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom;
-
-      isInsideSection.current = mouseInside || false;
-      const cards = gridRef.current.querySelectorAll('.magic-bento-card');
-
-      if (!mouseInside) {
-        gsap.to(spotlightRef.current, {
-          opacity: 0,
-          duration: 0.3,
-          ease: 'power2.out'
-        });
-        cards.forEach(card => {
-          (card as HTMLElement).style.setProperty('--glow-intensity', '0');
-        });
-        return;
-      }
-
-      const { proximity, fadeDistance } = calculateSpotlightValues(spotlightRadius);
-      let minDistance = Infinity;
-
-      cards.forEach(card => {
-        const cardElement = card as HTMLElement;
-        const cardRect = cardElement.getBoundingClientRect();
-        const centerX = cardRect.left + cardRect.width / 2;
-        const centerY = cardRect.top + cardRect.height / 2;
-        const distance =
-          Math.hypot(e.clientX - centerX, e.clientY - centerY) - Math.max(cardRect.width, cardRect.height) / 2;
-        const effectiveDistance = Math.max(0, distance);
-
-        minDistance = Math.min(minDistance, effectiveDistance);
-
-        let glowIntensity = 0;
-        if (effectiveDistance <= proximity) {
-          glowIntensity = 1;
-        } else if (effectiveDistance <= fadeDistance) {
-          glowIntensity = (fadeDistance - effectiveDistance) / (fadeDistance - proximity);
-        }
-
-        updateCardGlowProperties(cardElement, e.clientX, e.clientY, glowIntensity, spotlightRadius);
-      });
-
-      gsap.to(spotlightRef.current, {
-        left: e.clientX,
-        top: e.clientY,
-        duration: 0.1,
-        ease: 'power2.out'
-      });
-
-      const targetOpacity =
-        minDistance <= proximity
-          ? 0.8
-          : minDistance <= fadeDistance
-            ? ((fadeDistance - minDistance) / (fadeDistance - proximity)) * 0.8
-            : 0;
-
-      gsap.to(spotlightRef.current, {
-        opacity: targetOpacity,
-        duration: targetOpacity > 0 ? 0.2 : 0.5,
-        ease: 'power2.out'
-      });
-    };
-
-    const handleMouseLeave = () => {
-      isInsideSection.current = false;
-      gridRef.current?.querySelectorAll('.magic-bento-card').forEach(card => {
-        (card as HTMLElement).style.setProperty('--glow-intensity', '0');
-      });
-      if (spotlightRef.current) {
-        gsap.to(spotlightRef.current, {
-          opacity: 0,
-          duration: 0.3,
-          ease: 'power2.out'
-        });
-      }
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseleave', handleMouseLeave);
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseleave', handleMouseLeave);
-      spotlightRef.current?.parentNode?.removeChild(spotlightRef.current);
-    };
-  }, [gridRef, disableAnimations, enabled, spotlightRadius, glowColor]);
-
-  return null;
-};
-
-const BentoCardGrid: React.FC<{
-  children: React.ReactNode;
-  gridRef?: React.RefObject<HTMLDivElement | null>;
-}> = ({ children, gridRef }) => (
-  <div className="card-grid bento-section" ref={gridRef}>
-    {children}
-  </div>
-);
-
-const useMobileDetection = () => {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= MOBILE_BREAKPOINT);
-
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  return isMobile;
-};
-
-export const MagicBento: React.FC<BentoProps> = ({
-  textAutoHide = true,
-  enableStars = true,
-  enableSpotlight = true,
-  enableBorderGlow = true,
-  disableAnimations = false,
-  spotlightRadius = DEFAULT_SPOTLIGHT_RADIUS,
-  particleCount = DEFAULT_PARTICLE_COUNT,
-  enableTilt = false,
-  glowColor = DEFAULT_GLOW_COLOR,
-  clickEffect = true,
-  enableMagnetism = true
-}) => {
-  const gridRef = useRef<HTMLDivElement>(null);
-  const isMobile = useMobileDetection();
-  const shouldDisableAnimations = disableAnimations || isMobile;
-
-  return (
-    <>
-      {enableSpotlight && (
-        <GlobalSpotlight
-          gridRef={gridRef}
-          disableAnimations={shouldDisableAnimations}
-          enabled={enableSpotlight}
-          spotlightRadius={spotlightRadius}
-          glowColor={glowColor}
-        />
-      )}
-
-      <BentoCardGrid gridRef={gridRef}>
-        {cardData.map((card, index) => {
-          const baseClassName = \`magic-bento-card \${textAutoHide ? 'magic-bento-card--text-autohide' : ''} \${enableBorderGlow ? 'magic-bento-card--border-glow' : ''}\`;
-          const cardProps = {
-            className: baseClassName,
-            style: {
-              backgroundColor: card.color,
-              '--glow-color': glowColor
-            } as React.CSSProperties
-          };
-
-          if (enableStars) {
-            return (
-              <ParticleCard
-                key={index}
-                {...cardProps}
-                disableAnimations={shouldDisableAnimations}
-                particleCount={particleCount}
-                glowColor={glowColor}
-                enableTilt={enableTilt}
-                clickEffect={clickEffect}
-                enableMagnetism={enableMagnetism}
-              >
-                <div className="magic-bento-card__header">
-                  <div className="magic-bento-card__label">{card.label}</div>
-                </div>
-                <div className="magic-bento-card__content">
-                  <h2 className="magic-bento-card__title">{card.title}</h2>
-                  <p className="magic-bento-card__description">{card.description}</p>
-                </div>
-              </ParticleCard>
-            );
-          }
-
-          return (
-            <div
-              key={index}
-              {...cardProps}
-              ref={el => {
-                if (!el) return;
-
-                const handleMouseMove = (e: MouseEvent) => {
-                  if (shouldDisableAnimations) return;
-
-                  const rect = el.getBoundingClientRect();
-                  const x = e.clientX - rect.left;
-                  const y = e.clientY - rect.top;
-                  const centerX = rect.width / 2;
-                  const centerY = rect.height / 2;
-
-                  if (enableTilt) {
-                    const rotateX = ((y - centerY) / centerY) * -10;
-                    const rotateY = ((x - centerX) / centerX) * 10;
-                    gsap.to(el, {
-                      rotateX,
-                      rotateY,
-                      duration: 0.1,
-                      ease: 'power2.out',
-                      transformPerspective: 1000
-                    });
-                  }
-
-                  if (enableMagnetism) {
-                    const magnetX = (x - centerX) * 0.05;
-                    const magnetY = (y - centerY) * 0.05;
-                    gsap.to(el, {
-                      x: magnetX,
-                      y: magnetY,
-                      duration: 0.3,
-                      ease: 'power2.out'
-                    });
-                  }
-                };
-
-                const handleMouseLeave = () => {
-                  if (shouldDisableAnimations) return;
-
-                  if (enableTilt) {
-                    gsap.to(el, {
-                      rotateX: 0,
-                      rotateY: 0,
-                      duration: 0.3,
-                      ease: 'power2.out'
-                    });
-                  }
-
-                  if (enableMagnetism) {
-                    gsap.to(el, {
-                      x: 0,
-                      y: 0,
-                      duration: 0.3,
-                      ease: 'power2.out'
-                    });
-                  }
-                };
-
-                const handleClick = (e: MouseEvent) => {
-                  if (!clickEffect || shouldDisableAnimations) return;
-
-                  const rect = el.getBoundingClientRect();
-                  const x = e.clientX - rect.left;
-                  const y = e.clientY - rect.top;
-
-                  // Calculate the maximum distance from click point to any corner
-                  const maxDistance = Math.max(
-                    Math.hypot(x, y),
-                    Math.hypot(x - rect.width, y),
-                    Math.hypot(x, y - rect.height),
-                    Math.hypot(x - rect.width, y - rect.height)
-                  );
-
-                  const ripple = document.createElement('div');
-                  ripple.style.cssText = \`
-                    position: absolute;
-                    width: \${maxDistance * 2}px;
-                    height: \${maxDistance * 2}px;
-                    border-radius: 50%;
-                    background: radial-gradient(circle, rgba(\${glowColor}, 0.4) 0%, rgba(\${glowColor}, 0.2) 30%, transparent 70%);
-                    left: \${x - maxDistance}px;
-                    top: \${y - maxDistance}px;
-                    pointer-events: none;
-                    z-index: 1000;
-                  \`;
-
-                  el.appendChild(ripple);
-
-                  gsap.fromTo(
-                    ripple,
-                    {
-                      scale: 0,
-                      opacity: 1
-                    },
-                    {
-                      scale: 1,
-                      opacity: 0,
-                      duration: 0.8,
-                      ease: 'power2.out',
-                      onComplete: () => ripple.remove()
-                    }
-                  );
-                };
-
-                el.addEventListener('mousemove', handleMouseMove);
-                el.addEventListener('mouseleave', handleMouseLeave);
-                el.addEventListener('click', handleClick);
-              }}
-            >
-              <div className="magic-bento-card__header">
-                <div className="magic-bento-card__label">{card.label}</div>
-              </div>
-              <div className="magic-bento-card__content">
-                <h2 className="magic-bento-card__title">{card.title}</h2>
-                <p className="magic-bento-card__description">{card.description}</p>
-              </div>
-            </div>
-          );
-        })}
-      </BentoCardGrid>
-    </>
-  );
-};
-
-export default MagicBento;`;
-
-      case 'strands':
-        return `import { Renderer, Program, Mesh, Color, Triangle, RenderTarget } from 'ogl';
-import { useEffect, useRef, CSSProperties } from 'react';
-import './Strands.css';
-
-const MAX_STRANDS = 12;
-const MAX_COLORS = 8;
-
-const VERT = \`#version 300 es
-in vec2 position;
-void main() {
-  gl_Position = vec4(position, 0.0, 1.0);
-}
-\`;
-
-const FRAG = \`#version 300 es
-precision highp float;
-
-uniform float uTime;
-uniform vec2 uResolution;
-uniform vec3 uColors[\${MAX_COLORS}];
-uniform int uColorCount;
-uniform int uStrandCount;
-uniform float uSpeed;
-uniform float uAmplitude;
-uniform float uWaviness;
-uniform float uThickness;
-uniform float uGlow;
-uniform float uTaper;
-uniform float uSpread;
-uniform float uHueShift;
-uniform float uIntensity;
-uniform float uOpacity;
-uniform float uScale;
-uniform float uSaturation;
-
-out vec4 fragColor;
-
-const float PI = 3.14159265;
-
-vec3 spectrum(float t) {
-  return 0.5 + 0.5 * cos(2.0 * PI * (t + vec3(0.00, 0.33, 0.67)));
+function Lens({ modeProps, ...p }: { modeProps?: ModeProps } & MeshProps) {
+  return <ModeWrapper glb="/assets/3d/lens.glb" geometryKey="Cylinder" followPointer modeProps={modeProps} {...p} />;
 }
 
-vec3 samplePalette(float t) {
-  t = fract(t);
-  float scaled = t * float(uColorCount);
-  int idx = int(floor(scaled));
-  float blend = fract(scaled);
-  int nextIdx = idx + 1;
-  if (nextIdx >= uColorCount) nextIdx = 0;
-  return mix(uColors[idx], uColors[nextIdx], blend);
+function Cube({ modeProps, ...p }: { modeProps?: ModeProps } & MeshProps) {
+  return <ModeWrapper glb="/assets/3d/cube.glb" geometryKey="Cube" followPointer modeProps={modeProps} {...p} />;
 }
 
-vec3 strandColor(float t) {
-  if (uColorCount > 0) return samplePalette(t);
-  return spectrum(t);
-}
-
-void main() {
-  vec2 uv = (gl_FragCoord.xy - 0.5 * uResolution) / uResolution.y;
-  uv /= max(uScale, 0.0001);
-
-  float e = 0.06 + uIntensity * 0.94;
-  float env = pow(max(cos(uv.x * PI * 1.3), 0.0), uTaper);
-
-  vec3 col = vec3(0.0);
-
-  for (int i = 0; i < \${MAX_STRANDS}; i++) {
-    if (i >= uStrandCount) break;
-
-    float fi = float(i);
-    float ph = fi * 1.7 * uSpread;
-    float freq = (2.0 + fi * 0.35) * uWaviness;
-    float spd = 1.4 + fi * 1.2;
-
-    float tt = uTime * uSpeed;
-    float w = sin(uv.x * freq + tt * spd + ph) * 0.60
-            + sin(uv.x * freq * 1.1 - tt * spd * 0.7 + ph * 1.7) * 0.40;
-
-    float amp = (0.1 + 0.02 * e) * env * uAmplitude;
-    float y = w * amp;
-
-    float d = abs(uv.y - y);
-    float thick = (0.001 + 0.05 * e) * (0.35 + env) * uThickness;
-    float g = thick / (d + thick * 0.45);
-    g = g * g;
-
-    float h = fi / float(uStrandCount) + uv.x * 0.30 + uTime * 0.04 + uHueShift;
-    col += strandColor(h) * g * env;
-  }
-
-  col *= 0.45 + 0.7 * e;
-  col = 1.0 - exp(-col * uGlow);
-
-  float gray = dot(col, vec3(0.2126, 0.7152, 0.0722));
-  col = max(mix(vec3(gray), col, uSaturation), 0.0);
-
-  float lum = max(max(col.r, col.g), col.b);
-  float alpha = clamp(lum, 0.0, 1.0) * uOpacity;
-
-  fragColor = vec4(col * uOpacity, alpha);
-}
-\`;
-
-const GLASS_FRAG = \`#version 300 es
-precision highp float;
-
-uniform sampler2D uScene;
-uniform vec2 uResolution;
-uniform float uRadius;
-uniform float uRefraction;
-uniform float uDispersion;
-
-out vec4 fragColor;
-
-vec2 toUv(vec2 p) {
-  return p * (uResolution.y / uResolution) + 0.5;
-}
-
-void main() {
-  vec2 p = (gl_FragCoord.xy - 0.5 * uResolution) / uResolution.y;
-  float d = length(p);
-  float r = uRadius;
-
-  float edge = fwidth(d) * 1.5;
-  float mask = 1.0 - smoothstep(r - edge, r + edge, d);
-  if (mask <= 0.0) {
-    fragColor = vec4(0.0);
-    return;
-  }
-
-  float z = sqrt(max(r * r - d * d, 0.0)) / r;
-  float nd = d / r;
-
-  vec2 dir = d > 0.0 ? p / d : vec2(0.0);
-  float lens = smoothstep(0.85, 1.0, nd) * pow(nd, 6.0);
-  vec2 offset = -dir * lens * uRefraction * 0.15;
-  vec2 disp = -dir * lens * uDispersion * 0.012;
-
-  vec3 light;
-  light.r = texture(uScene, toUv(p + offset - disp)).r;
-  light.g = texture(uScene, toUv(p + offset)).g;
-  light.b = texture(uScene, toUv(p + offset + disp)).b;
-
-  float fres = pow(1.0 - z, 3.0);
-  vec3 rim = vec3(1.0) * fres * 0.18;
-
-  vec2 lightDir = normalize(vec2(-0.55, 0.6));
-  float spec = pow(max(dot(p / max(r, 1e-4), lightDir), 0.0), 6.0);
-  spec *= smoothstep(r, r * 0.55, d);
-
-  vec3 emissive = light + rim + vec3(spec) * 0.4;
-  float emissiveA = clamp(max(max(emissive.r, emissive.g), emissive.b), 0.0, 1.0);
-
-  float bodyA = 0.05 + fres * 0.05;
-
-  float outA = emissiveA + bodyA * (1.0 - emissiveA);
-  vec3 outRGB = emissive;
-
-  outRGB *= mask;
-  outA *= mask;
-
-  fragColor = vec4(outRGB, outA);
-}
-\`;
-
-export interface StrandsProps {
-  colors?: string[];
-  count?: number;
-  speed?: number;
-  amplitude?: number;
-  waviness?: number;
-  thickness?: number;
-  glow?: number;
-  taper?: number;
-  spread?: number;
-  hueShift?: number;
-  intensity?: number;
-  saturation?: number;
-  opacity?: number;
-  scale?: number;
-  glass?: boolean;
-  refraction?: number;
-  dispersion?: number;
-  glassSize?: number;
-  className?: string;
-  style?: CSSProperties;
-}
-
-const buildPalette = (colors: string[]): number[][] => {
-  const filled = colors && colors.length ? colors : ['#ffffff'];
-  const padded: number[][] = [];
-  for (let i = 0; i < MAX_COLORS; i++) {
-    const hex = filled[i] ?? filled[filled.length - 1];
-    const c = new Color(hex);
-    padded.push([c.r, c.g, c.b]);
-  }
-  return padded;
-};
-
-export default function Strands({
-  colors = ['#FF4242', '#7C3AED', '#06B6D4', '#EAB308'],
-  count = 3,
-  speed = 0.5,
-  amplitude = 1,
-  waviness = 1,
-  thickness = 0.7,
-  glow = 2.6,
-  taper = 3,
-  spread = 1,
-  hueShift = 0,
-  intensity = 0.6,
-  saturation = 1.5,
-  opacity = 1,
-  scale = 1.5,
-  glass = false,
-  refraction = 1,
-  dispersion = 1,
-  glassSize = 1,
-  className = '',
-  style
-}: StrandsProps) {
-  const propsRef = useRef<Required<Omit<StrandsProps, 'className' | 'style'>>>({
-    colors, count, speed, amplitude, waviness, thickness, glow, taper, spread, hueShift, intensity, saturation, opacity, scale, glass, refraction, dispersion, glassSize
-  });
-
-  propsRef.current = {
-    colors, count, speed, amplitude, waviness, thickness, glow, taper, spread, hueShift, intensity, saturation, opacity, scale, glass, refraction, dispersion, glassSize
+function Bar({ modeProps = {}, ...p }: { modeProps?: ModeProps } & MeshProps) {
+  const defaultMat = {
+    transmission: 1,
+    roughness: 0,
+    thickness: 10,
+    ior: 1.15,
+    color: '#ffffff',
+    attenuationColor: '#ffffff',
+    attenuationDistance: 0.25
   };
 
-  const ctnDom = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const ctn = ctnDom.current;
-    if (!ctn) return;
-
-    const renderer = new Renderer({ alpha: true, multipliedAlpha: true, antialias: true });
-    const gl = renderer.gl;
-    gl.clearColor(0, 0, 0, 0);
-    gl.enable(gl.BLEND);
-    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-
-    const geometry = new Triangle(gl);
-    if (geometry.attributes.uv) delete geometry.attributes.uv;
-
-    const program = new Program(gl, {
-      vertex: VERT,
-      fragment: FRAG,
-      uniforms: {
-        uTime: { value: 0 },
-        uResolution: { value: [ctn.offsetWidth, ctn.offsetHeight] },
-        uColors: { value: buildPalette(propsRef.current.colors) },
-        uColorCount: { value: Math.min(propsRef.current.colors.length, MAX_COLORS) },
-        uStrandCount: { value: Math.min(propsRef.current.count, MAX_STRANDS) },
-        uSpeed: { value: speed },
-        uAmplitude: { value: amplitude },
-        uWaviness: { value: waviness },
-        uThickness: { value: thickness },
-        uGlow: { value: glow },
-        uTaper: { value: taper },
-        uSpread: { value: spread },
-        uHueShift: { value: hueShift },
-        uIntensity: { value: intensity },
-        uOpacity: { value: opacity },
-        uScale: { value: scale },
-        uSaturation: { value: saturation }
-      }
-    });
-
-    const mesh = new Mesh(gl, { geometry, program });
-    const renderTarget = new RenderTarget(gl, { width: ctn.offsetWidth, height: ctn.offsetHeight });
-
-    const glassProgram = new Program(gl, {
-      vertex: VERT,
-      fragment: GLASS_FRAG,
-      uniforms: {
-        uScene: { value: renderTarget.texture },
-        uResolution: { value: [ctn.offsetWidth, ctn.offsetHeight] },
-        uRadius: { value: 0.46 * glassSize },
-        uRefraction: { value: refraction },
-        uDispersion: { value: dispersion }
-      }
-    });
-    const glassMesh = new Mesh(gl, { geometry, program: glassProgram });
-
-    ctn.appendChild(gl.canvas);
-
-    function resize() {
-      if (!ctn) return;
-      const width = ctn.offsetWidth;
-      const height = ctn.offsetHeight;
-      renderer.setSize(width, height);
-      program.uniforms.uResolution.value = [width, height];
-      renderTarget.setSize(width, height);
-      glassProgram.uniforms.uResolution.value = [width, height];
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    let animateId = 0;
-    const update = (t: number) => {
-      animateId = requestAnimationFrame(update);
-      const current = propsRef.current;
-      program.uniforms.uTime.value = t * 0.001;
-      program.uniforms.uColors.value = buildPalette(current.colors);
-      program.uniforms.uColorCount.value = Math.min(current.colors.length, MAX_COLORS);
-      program.uniforms.uStrandCount.value = Math.min(Math.max(Math.round(current.count), 1), MAX_STRANDS);
-      program.uniforms.uSpeed.value = current.speed;
-      program.uniforms.uAmplitude.value = current.amplitude;
-      program.uniforms.uWaviness.value = current.waviness;
-      program.uniforms.uThickness.value = current.thickness;
-      program.uniforms.uGlow.value = current.glow;
-      program.uniforms.uTaper.value = current.taper;
-      program.uniforms.uSpread.value = current.spread;
-      program.uniforms.uHueShift.value = current.hueShift;
-      program.uniforms.uIntensity.value = current.intensity;
-      program.uniforms.uOpacity.value = current.opacity;
-      program.uniforms.uScale.value = current.scale;
-      program.uniforms.uSaturation.value = current.saturation;
-
-      if (current.glass) {
-        renderer.render({ scene: mesh, target: renderTarget });
-        glassProgram.uniforms.uScene.value = renderTarget.texture;
-        glassProgram.uniforms.uRefraction.value = current.refraction;
-        glassProgram.uniforms.uDispersion.value = current.dispersion;
-        glassProgram.uniforms.uRadius.value = 0.46 * current.glassSize;
-        renderer.render({ scene: glassMesh });
-      } else {
-        renderer.render({ scene: mesh });
-      }
-    };
-    animateId = requestAnimationFrame(update);
-
-    return () => {
-      cancelAnimationFrame(animateId);
-      window.removeEventListener('resize', resize);
-      if (ctn && gl.canvas.parentNode === ctn) {
-        ctn.removeChild(gl.canvas);
-      }
-      gl.getExtension('WEBGL_lose_context')?.loseContext();
-    };
-  }, []);
-
-  return <div ref={ctnDom} className={\`strands-container \${className}\`} style={style} />;
-}`;
-
-      case 'magnet':
-        return `import React, { useState, useEffect, useRef, ReactNode, HTMLAttributes } from 'react';
-
-interface MagnetProps extends HTMLAttributes<HTMLDivElement> {
-  children: ReactNode;
-  padding?: number;
-  disabled?: boolean;
-  magnetStrength?: number;
-  activeTransition?: string;
-  inactiveTransition?: string;
-  wrapperClassName?: string;
-  innerClassName?: string;
+  return (
+    <ModeWrapper
+      glb="/assets/3d/bar.glb"
+      geometryKey="Cube"
+      lockToBottom
+      followPointer={false}
+      modeProps={{ ...defaultMat, ...modeProps }}
+      {...p}
+    />
+  );
 }
 
-export const Magnet: React.FC<MagnetProps> = ({
-  children,
-  padding = 100,
-  disabled = false,
-  magnetStrength = 2,
-  activeTransition = 'transform 0.3s ease-out',
-  inactiveTransition = 'transform 0.5s ease-in-out',
-  wrapperClassName = '',
-  innerClassName = '',
-  ...props
-}) => {
-  const [isActive, setIsActive] = useState<boolean>(false);
-  const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
-  const magnetRef = useRef<HTMLDivElement>(null);
+function NavItems({ items }: { items: NavItem[] }) {
+  const group = useRef<THREE.Group>(null!);
+  const { viewport, camera } = useThree();
+
+  const DEVICE = {
+    mobile: { max: 639, spacing: 0.2, fontSize: 0.035 },
+    tablet: { max: 1023, spacing: 0.24, fontSize: 0.045 },
+    desktop: { max: Infinity, spacing: 0.3, fontSize: 0.045 }
+  };
+  const getDevice = () => {
+    const w = window.innerWidth;
+    return w <= DEVICE.mobile.max ? 'mobile' : w <= DEVICE.tablet.max ? 'tablet' : 'desktop';
+  };
+
+  const [device, setDevice] = useState<keyof typeof DEVICE>(getDevice());
 
   useEffect(() => {
-    if (disabled) {
-      setPosition({ x: 0, y: 0 });
-      return;
-    }
+    const onResize = () => setDevice(getDevice());
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!magnetRef.current) return;
+  const { spacing, fontSize } = DEVICE[device];
 
-      const { left, top, width, height } = magnetRef.current.getBoundingClientRect();
-      const centerX = left + width / 2;
-      const centerY = top + height / 2;
+  useFrame(() => {
+    if (!group.current) return;
+    const v = viewport.getCurrentViewport(camera, [0, 0, 15]);
+    group.current.position.set(0, -v.height / 2 + 0.2, 15.1);
 
-      const distX = Math.abs(centerX - e.clientX);
-      const distY = Math.abs(centerY - e.clientY);
+    group.current.children.forEach((child, i) => {
+      child.position.x = (i - (items.length - 1) / 2) * spacing;
+    });
+  });
 
-      if (distX < width / 2 + padding && distY < height / 2 + padding) {
-        setIsActive(true);
-        const offsetX = (e.clientX - centerX) / magnetStrength;
-        const offsetY = (e.clientY - centerY) / magnetStrength;
-        setPosition({ x: offsetX, y: offsetY });
-      } else {
-        setIsActive(false);
-        setPosition({ x: 0, y: 0 });
-      }
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, [padding, disabled, magnetStrength]);
-
-  const transitionStyle = isActive ? activeTransition : inactiveTransition;
+  const handleNavigate = (link: string) => {
+    if (!link) return;
+    link.startsWith('#') ? (window.location.hash = link) : (window.location.href = link);
+  };
 
   return (
-    <div
-      ref={magnetRef}
-      className={wrapperClassName}
-      style={{ position: 'relative', display: 'inline-block' }}
-      {...props}
-    >
-      <div
-        className={innerClassName}
-        style={{
-          transform: \`translate3d(\${position.x}px, \${position.y}px, 0)\`,
-          transition: transitionStyle,
-          willChange: 'transform'
-        }}
-      >
-        {children}
-      </div>
-    </div>
+    <group ref={group} renderOrder={10}>
+      {items.map(({ label, link }) => (
+        <Text
+          key={label}
+          fontSize={fontSize}
+          color="white"
+          anchorX="center"
+          anchorY="middle"
+          outlineWidth={0}
+          outlineBlur="20%"
+          outlineColor="#000"
+          outlineOpacity={0.5}
+          renderOrder={10}
+          onClick={e => {
+            e.stopPropagation();
+            handleNavigate(link);
+          }}
+          onPointerOver={() => (document.body.style.cursor = 'pointer')}
+          onPointerOut={() => (document.body.style.cursor = 'auto')}
+        >
+          {label}
+        </Text>
+      ))}
+    </group>
   );
-};
+}
 
-export default Magnet;`;
+function Images() {
+  const group = useRef<ZoomGroup>(null!);
+  const data = useScroll();
+  const { height } = useThree(s => s.viewport);
 
-      case 'terminal-card':
-        return `import React from 'react';
-import './TerminalCard.css';
-
-export const TerminalCard: React.FC = () => {
-  return (
-    <div className="terminal-container">
-      <div className="terminal_toolbar">
-        <div className="butt">
-          <button className="btn btn-color" />
-          <button className="btn" />
-          <button className="btn" />
-        </div>
-        <p className="user">johndoe@admin: ~</p>
-        <div className="add_tab">+</div>
-      </div>
-      <div className="terminal_body">
-        <div className="terminal_promt">
-          <span className="terminal_user">johndoe@admin:</span>
-          <span className="terminal_location">~</span>
-          <span className="terminal_bling">$</span>
-          <span className="terminal_cursor" />
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default TerminalCard;`;
-
-      case 'sparkle-button':
-        return `import React from 'react';
-import './SparkleButton.css';
-
-export const SparkleButton: React.FC = () => {
-  return (
-    <div className="sp">
-      <button className="sparkle-button">
-        <span className="spark" />
-        <span className="backdrop" />
-        <svg className="sparkle" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M14.187 8.096L15 5.25L15.813 8.096C16.0231 8.83114 16.4171 9.50062 16.9577 10.0413C17.4984 10.5819 18.1679 10.9759 18.903 11.186L21.75 12L18.904 12.813C18.1689 13.0231 17.4994 13.4171 16.9587 13.9577C16.4181 14.4984 16.0241 15.1679 15.814 15.903L15 18.75L14.187 15.904C13.9769 15.1689 13.5829 14.4994 13.0423 13.9587C12.5016 13.4181 11.8321 13.0241 11.097 12.814L8.25 12L11.096 11.187C11.8311 10.9769 12.5006 10.5829 13.0413 10.0423C13.5819 9.50162 13.9759 8.83214 14.186 8.097L14.187 8.096Z" fill="black" stroke="black" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M6 14.25L5.741 15.285C5.59267 15.8785 5.28579 16.4206 4.85319 16.8532C4.42059 17.2858 3.87853 17.5927 3.285 17.741L2.25 18L3.285 18.259C3.87853 18.4073 4.42059 18.7142 4.85319 19.1468C5.28579 19.5794 5.59267 20.1215 5.741 20.715L6 21.75L6.259 20.715C6.40725 20.1216 6.71398 19.5796 7.14639 19.147C7.5788 18.7144 8.12065 18.4075 8.714 18.259L9.75 18L8.714 17.741C8.12065 17.5925 7.5788 17.2856 7.14639 16.853C6.71398 16.4204 6.40725 15.8784 6.259 15.285L6 14.25Z" fill="black" stroke="black" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M6.5 4L6.303 4.5915C6.24777 4.75718 6.15472 4.90774 6.03123 5.03123C5.90774 5.15472 5.75718 5.24777 5.5915 5.303L5 5.5L5.5915 5.697C5.75718 5.75223 5.90774 5.84528 6.03123 5.96877C6.15472 6.09226 6.24777 6.24282 6.303 6.4085L6.5 7L6.697 6.4085C6.75223 6.24282 6.84528 6.09226 6.96877 5.96877C7.09226 5.84528 7.24282 5.75223 7.4085 5.697L8 5.5L7.4085 5.303C7.24282 5.24777 7.09226 5.15472 6.96877 5.03123C6.84528 4.90774 6.75223 4.75718 6.697 4.5915L6.5 4Z" fill="black" stroke="black" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-        <span className="text">Generate Site</span>
-      </button>
-      <div className="bodydrop" />
-      <span aria-hidden="true" className="particle-pen">
-        {Array.from({ length: 20 }).map((_, i) => (
-          <svg
-            key={i}
-            className="particle"
-            viewBox="0 0 15 15"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            style={{
-              '--x': Math.random() * 100,
-              '--y': Math.random() * 100,
-              '--delay': Math.random() * -10,
-              '--duration': 2 + Math.random() * 4,
-              '--size': 0.1 + Math.random() * 0.35,
-              '--alpha': 0.3 + Math.random() * 0.7
-            } as React.CSSProperties}
-          >
-            <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        ))}
-      </span>
-    </div>
-  );
-};
-
-export default SparkleButton;`;
-
-      case 'japanese-matrix':
-        return `import React from 'react';
-import './JapaneseMatrix.css';
-
-const CHARS = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ';
-
-export const JapaneseMatrix: React.FC = () => {
-  const spans = Array.from({ length: 150 }).map((_, i) => {
-    const char = CHARS[Math.floor(Math.random() * CHARS.length)];
-    return <span key={i}>{char}</span>;
+  useFrame(() => {
+    if (!group.current || !group.current.children || group.current.children.length < 5) return;
+    group.current.children[0].material.zoom = 1 + data.range(0, 1 / 3) / 3;
+    group.current.children[1].material.zoom = 1 + data.range(0, 1 / 3) / 3;
+    group.current.children[2].material.zoom = 1 + data.range(1.15 / 3, 1 / 3) / 2;
+    group.current.children[3].material.zoom = 1 + data.range(1.15 / 3, 1 / 3) / 2;
+    group.current.children[4].material.zoom = 1 + data.range(1.15 / 3, 1 / 3) / 2;
   });
 
   return (
-    <div className="jp-matrix-wrapper">
-      <div className="jp-matrix">
-        {spans}
-      </div>
-    </div>
+    <group ref={group}>
+      <Image position={[-2, 0, 0]} scale={[3, height / 1.1]} url="/assets/demo/cs1.webp" />
+      <Image position={[2, 0, 3]} scale={3} url="/assets/demo/cs2.webp" />
+      <Image position={[-2.05, -height, 6]} scale={[1, 3]} url="/assets/demo/cs3.webp" />
+      <Image position={[-0.6, -height, 9]} scale={[1, 2]} url="/assets/demo/cs1.webp" />
+      <Image position={[0.75, -height, 10.5]} scale={1.5} url="/assets/demo/cs2.webp" />
+    </group>
   );
-};
+}
 
-export default JapaneseMatrix;`;
+function Typography() {
+  const DEVICE = {
+    mobile: { fontSize: 0.2 },
+    tablet: { fontSize: 0.4 },
+    desktop: { fontSize: 0.6 }
+  };
+  const getDevice = () => {
+    const w = window.innerWidth;
+    return w <= 639 ? 'mobile' : w <= 1023 ? 'tablet' : 'desktop';
+  };
 
-      case 'back-to-top':
-        return `import React from 'react';
-import './BackToTop.css';
+  const [device, setDevice] = useState<keyof typeof DEVICE>(getDevice());
 
-export const BackToTop: React.FC = () => {
+  useEffect(() => {
+    const onResize = () => setDevice(getDevice());
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  const { fontSize } = DEVICE[device];
+
   return (
-    <button className="back-to-top-button">
-      <svg className="svgIcon" viewBox="0 0 384 512">
-        <path d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 32 32s32-14.3 32-32V141.2L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z" />
-      </svg>
-    </button>
+    <Text
+      position={[0, 0, 12]}
+      fontSize={fontSize}
+      letterSpacing={-0.05}
+      outlineWidth={0}
+      outlineBlur="20%"
+      outlineColor="#000"
+      outlineOpacity={0.5}
+      color="white"
+      anchorX="center"
+      anchorY="middle"
+    >
+      React Bits
+    </Text>
   );
-};
-
-export default BackToTop;`;
-
-      case 'glass-app-buttons':
-        return `/* This component is fully styled using utility classes from Tailwind CSS. No additional CSS stylesheets are required. */`;
+}`;
+      default:
+        return '';
     }
   };
 
@@ -3633,6 +2040,26 @@ export default BackToTop;`;
                 Hover close to pull me!
               </button>
             </Magnet>
+          </div>
+        );
+      case 'fluid-glass':
+        const mode = controlValues.mode || 'lens';
+        const modeProps = {
+          scale: controlValues.scale !== undefined ? controlValues.scale : 0.25,
+          ior: controlValues.ior !== undefined ? controlValues.ior : 1.15,
+          thickness: controlValues.thickness !== undefined ? controlValues.thickness : 5,
+          chromaticAberration: controlValues.chromaticAberration !== undefined ? controlValues.chromaticAberration : 0.1,
+          anisotropy: controlValues.anisotropy !== undefined ? controlValues.anisotropy : 0.01
+        };
+        return (
+          <div className="w-full max-w-lg h-96 border border-zinc-900 bg-zinc-950 rounded-2xl overflow-hidden relative">
+            <FluidGlass
+              key={triggerKey + '-' + mode}
+              mode={mode}
+              lensProps={modeProps}
+              barProps={modeProps}
+              cubeProps={modeProps}
+            />
           </div>
         );
       case 'terminal-card':
@@ -3800,7 +2227,7 @@ export default BackToTop;`;
                     onClick={() => setExportTab('usage')}
                     className={cn(
                       "px-2.5 py-1 text-[10px] font-mono rounded cursor-pointer transition-colors",
-                      exportTab === 'usage' ? "bg-zinc-900 text-white font-bold" : "text-zinc-500 hover:text-zinc-355"
+                      exportTab === 'usage' ? "bg-zinc-950 text-white font-bold" : "text-zinc-550 hover:text-zinc-355"
                     )}
                   >
                     Usage Example
@@ -3885,6 +2312,20 @@ export default BackToTop;`;
                           />
                           <span className="text-[10px] font-mono text-zinc-400 uppercase">{value}</span>
                         </div>
+                      )}
+
+                      {field.type === 'select' && (
+                        <select
+                          value={value}
+                          onChange={(e) => handleControlChange(field.id, e.target.value)}
+                          className="w-full bg-zinc-900 text-zinc-300 text-[10px] font-mono p-2 rounded border border-zinc-800 focus:outline-none focus:border-violet-500 cursor-pointer"
+                        >
+                          {field.options?.map(opt => (
+                            <option key={opt} value={opt}>
+                              {opt}
+                            </option>
+                          ))}
+                        </select>
                       )}
                     </div>
                   );
