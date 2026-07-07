@@ -68,5 +68,16 @@ export const TOOLS_REGISTRY: ToolMetadata[] = [
     keywords: ['text', 'animation', 'reactbits', 'split-text', 'scramble', 'typewriter', 'motion'],
     featured: true,
     component: React.lazy(() => import('@/modules/text-animations'))
+  },
+  {
+    id: 'components',
+    title: 'Components',
+    description: 'Preview, customize, and export custom high-performance interactive React UI components.',
+    category: 'Design',
+    icon: Layers,
+    shortcut: 'D',
+    keywords: ['component', 'ui', 'react', 'animated', 'list', 'bento', 'dock', 'motion'],
+    featured: true,
+    component: React.lazy(() => import('@/modules/components'))
   }
 ];
