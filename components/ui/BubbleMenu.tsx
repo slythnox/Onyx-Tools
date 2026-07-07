@@ -85,14 +85,12 @@ export default function BubbleMenu({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
 
+  const containerRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const bubblesRef = useRef<HTMLAnchorElement[]>([]);
   const labelRefs = useRef<HTMLSpanElement[]>([]);
 
   const menuItems = items?.length ? items : DEFAULT_ITEMS;
-  const containerClassName = ['bubble-menu', useFixedPosition ? 'fixed' : 'absolute', className]
-    .filter(Boolean)
-    .join(' ');
 
   const handleToggle = () => {
     const nextState = !isMenuOpen;
@@ -176,9 +174,86 @@ export default function BubbleMenu({
     return () => window.removeEventListener('resize', handleResize);
   }, [isMenuOpen, menuItems]);
 
+  // When not fixed, wrap everything in a self-contained relative container
+  // so the overlay always positions correctly regardless of the parent.
+  if (!useFixedPosition) {
+    return (
+      <div
+        ref={containerRef}
+        className={['bubble-menu-root', className].filter(Boolean).join(' ')}
+        style={style}
+      >
+        {/* Navbar bar */}
+        <nav className="bubble-menu absolute" aria-label="Main navigation">
+          <div className="bubble logo-bubble" aria-label="Logo" style={{ background: menuBg }}>
+            <span className="logo-content">
+              {typeof logo === 'string' ? <img src={logo} alt="Logo" className="bubble-logo" /> : logo}
+            </span>
+          </div>
+
+          <button
+            type="button"
+            className={`bubble toggle-bubble menu-btn ${isMenuOpen ? 'open' : ''}`}
+            onClick={handleToggle}
+            aria-label={menuAriaLabel}
+            aria-pressed={isMenuOpen}
+            style={{ background: menuBg }}
+          >
+            <span className="menu-line" style={{ background: menuContentColor }} />
+            <span className="menu-line" style={{ background: menuContentColor }} />
+          </button>
+        </nav>
+
+        {/* Full-cover overlay */}
+        {showOverlay && (
+          <div
+            ref={overlayRef}
+            className="bubble-menu-items absolute"
+            aria-hidden={!isMenuOpen}
+          >
+            <ul className="pill-list" role="menu" aria-label="Menu links">
+              {menuItems.map((item, idx) => (
+                <li key={idx} role="none" className="pill-col">
+                  <a
+                    role="menuitem"
+                    href={item.href}
+                    aria-label={item.ariaLabel || item.label}
+                    className="pill-link"
+                    style={
+                      {
+                        '--item-rot': `${item.rotation ?? 0}deg`,
+                        '--pill-bg': menuBg,
+                        '--pill-color': menuContentColor,
+                        '--hover-bg': item.hoverStyles?.bgColor || '#f3f4f6',
+                        '--hover-color': item.hoverStyles?.textColor || menuContentColor
+                      } as CSSProperties
+                    }
+                    ref={el => {
+                      if (el) bubblesRef.current[idx] = el;
+                    }}
+                  >
+                    <span
+                      className="pill-label"
+                      ref={el => {
+                        if (el) labelRefs.current[idx] = el;
+                      }}
+                    >
+                      {item.label}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Fixed position variant — renders into document flow naturally
   return (
     <>
-      <nav className={containerClassName} style={style} aria-label="Main navigation">
+      <nav className={['bubble-menu fixed', className].filter(Boolean).join(' ')} style={style} aria-label="Main navigation">
         <div className="bubble logo-bubble" aria-label="Logo" style={{ background: menuBg }}>
           <span className="logo-content">
             {typeof logo === 'string' ? <img src={logo} alt="Logo" className="bubble-logo" /> : logo}
@@ -194,13 +269,14 @@ export default function BubbleMenu({
           style={{ background: menuBg }}
         >
           <span className="menu-line" style={{ background: menuContentColor }} />
-          <span className="menu-line short" style={{ background: menuContentColor }} />
+          <span className="menu-line" style={{ background: menuContentColor }} />
         </button>
       </nav>
+
       {showOverlay && (
         <div
           ref={overlayRef}
-          className={`bubble-menu-items ${useFixedPosition ? 'fixed' : 'absolute'}`}
+          className="bubble-menu-items fixed"
           aria-hidden={!isMenuOpen}
         >
           <ul className="pill-list" role="menu" aria-label="Menu links">

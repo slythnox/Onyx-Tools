@@ -1938,7 +1938,7 @@ export default BackToTop;`;
         );
       case 'bubble-menu':
         return (
-          <div className="w-full h-80 flex items-center justify-center relative bg-zinc-950/20 border border-zinc-900 rounded-2xl overflow-hidden">
+          <div className="w-full h-80 rounded-2xl overflow-hidden border border-zinc-900">
             <BubbleMenu
               key={triggerKey}
               logo={<span className="font-extrabold text-white font-mono tracking-wider">RB</span>}
@@ -2023,6 +2023,7 @@ export default BackToTop;`;
               barProps={modeProps}
               cubeProps={modeProps}
               bgColor={bgColor}
+              barLockToBottom={false}
             />
           </div>
         );

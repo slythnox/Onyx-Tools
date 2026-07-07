@@ -1,3 +1,12 @@
+/* Self-contained wrapper — makes absolute overlay position relative to this root */
+.bubble-menu-root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0f0f1a 0%, #1a1028 50%, #0a0a14 100%);
+}
+
 .bubble-menu {
   left: 0;
   right: 0;
