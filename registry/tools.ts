@@ -1,5 +1,4 @@
-import React from 'react';
-import { Code, Palette, Pipette, Layers, LucideIcon } from 'lucide-react';
+import { Code, Palette, Pipette, Layers, Type, LucideIcon } from 'lucide-react';
 
 export interface ToolMetadata {
   id: string;
@@ -57,5 +56,16 @@ export const TOOLS_REGISTRY: ToolMetadata[] = [
     keywords: ['background', 'mesh', 'aurora', 'grid', 'css', 'tailwind', 'svg', 'generator'],
     featured: true,
     component: React.lazy(() => import('@/modules/background-studio'))
+  },
+  {
+    id: 'text-animations',
+    title: 'Text Animations',
+    description: 'Preview, customize, and export high-performance interactive React text animations.',
+    category: 'Design',
+    icon: Type,
+    shortcut: 'T',
+    keywords: ['text', 'animation', 'reactbits', 'split-text', 'scramble', 'typewriter', 'motion'],
+    featured: true,
+    component: React.lazy(() => import('@/modules/text-animations'))
   }
 ];
