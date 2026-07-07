@@ -38,6 +38,17 @@ import lightRaysCss from '@/components/LightRays.css?raw';
 
 type BackgroundType = 'blinds' | 'dot' | 'pb' | 'bends' | 'lines' | 'laser' | 'rays';
 
+type SliderConfig = [
+  string, // label
+  string, // placeholder/unused
+  number, // min
+  number, // max
+  number, // step
+  number, // value
+  (val: number) => void, // setter
+  number? // decimal places
+];
+
 export default function BackgroundStudio() {
   const { showToast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -486,7 +497,17 @@ export default function BackgroundStudio() {
             {/* BLINDS */}
             {activeBg === 'blinds' && (
               <div className="space-y-3.5 pt-2 border-t border-zinc-900/60">
-                {[['Angle','',0,360,1,angle,setAngle],['Noise','',0,1,0.01,noise,setNoise,2],['Blind Count','',4,32,1,blindCount,setBlindCount],['Blind Min Width','',10,150,1,blindMinWidth,setBlindMinWidth],['Mouse Dampening','',0.01,0.99,0.01,mouseDampening,setMouseDampening,2],['Spotlight Radius','',0.1,2,0.05,spotlightRadius,setSpotlightRadius,2],['Spotlight Softness','',0.1,3,0.05,spotlightSoftness,setSpotlightSoftness,2],['Spotlight Opacity','',0,1,0.05,spotlightOpacity,setSpotlightOpacity,2],['Distort Amount','',0,5,0.05,distortAmount,setDistortAmount,2]].map(([label,,min,max,step,val,setter,dec]: any) => (
+                {([
+                  ['Angle', '', 0, 360, 1, angle, setAngle],
+                  ['Noise', '', 0, 1, 0.01, noise, setNoise, 2],
+                  ['Blind Count', '', 4, 32, 1, blindCount, setBlindCount],
+                  ['Blind Min Width', '', 10, 150, 1, blindMinWidth, setBlindMinWidth],
+                  ['Mouse Dampening', '', 0.01, 0.99, 0.01, mouseDampening, setMouseDampening, 2],
+                  ['Spotlight Radius', '', 0.1, 2, 0.05, spotlightRadius, setSpotlightRadius, 2],
+                  ['Spotlight Softness', '', 0.1, 3, 0.05, spotlightSoftness, setSpotlightSoftness, 2],
+                  ['Spotlight Opacity', '', 0, 1, 0.05, spotlightOpacity, setSpotlightOpacity, 2],
+                  ['Distort Amount', '', 0, 5, 0.05, distortAmount, setDistortAmount, 2]
+                ] as SliderConfig[]).map(([label,,min,max,step,val,setter,dec]) => (
                   <div key={label}><div className="flex justify-between text-[10px] font-mono mb-1 text-zinc-400"><span>{label}</span><span>{dec ? (val as number).toFixed(dec) : val}</span></div><input type="range" min={min} max={max} step={step} value={val as number} onChange={e => (setter as Function)(Number(e.target.value))} className="w-full" /></div>
                 ))}
                 <div className="flex items-center justify-between py-1"><span className="text-[10px] font-mono text-zinc-400">Mirror Gradient</span><input type="checkbox" checked={mirrorGradient} onChange={e => setMirrorGradient(e.target.checked)} className="cursor-pointer" /></div>
@@ -497,7 +518,20 @@ export default function BackgroundStudio() {
             {/* PARTICLE BURST */}
             {activeBg === 'pb' && (
               <div className="space-y-3.5 pt-2 border-t border-zinc-900/60">
-                {[['Particle Count','',50,500,1,pbCount,setPbCount],['Magnet Radius','',1,40,1,pbMagnetRadius,setPbMagnetRadius],['Ring Radius','',0,100,1,pbRingRadius,setPbRingRadius],['Wave Speed','',0,2,0.05,pbWaveSpeed,setPbWaveSpeed,2],['Wave Amplitude','',0,5,0.1,pbWaveAmplitude,setPbWaveAmplitude,2],['Particle Size','',0.5,10,0.1,pbParticleSize,setPbParticleSize,2],['Lerp Speed','',0.01,0.5,0.01,pbLerpSpeed,setPbLerpSpeed,2],['Particle Variance','',0,3,0.1,pbVariance,setPbVariance,2],['Rotation Speed','',0,5,0.1,pbRotationSpeed,setPbRotationSpeed,2],['Depth Factor','',0.1,4,0.1,pbDepthFactor,setPbDepthFactor,2],['Pulse Speed','',0,10,0.1,pbPulseSpeed,setPbPulseSpeed,2],['Field Strength','',1,30,1,pbFieldStrength,setPbFieldStrength]].map(([label,,min,max,step,val,setter,dec]: any) => (
+                {([
+                  ['Particle Count', '', 50, 500, 1, pbCount, setPbCount],
+                  ['Magnet Radius', '', 1, 40, 1, pbMagnetRadius, setPbMagnetRadius],
+                  ['Ring Radius', '', 0, 100, 1, pbRingRadius, setPbRingRadius],
+                  ['Wave Speed', '', 0, 2, 0.05, pbWaveSpeed, setPbWaveSpeed, 2],
+                  ['Wave Amplitude', '', 0, 5, 0.1, pbWaveAmplitude, setPbWaveAmplitude, 2],
+                  ['Particle Size', '', 0.5, 10, 0.1, pbParticleSize, setPbParticleSize, 2],
+                  ['Lerp Speed', '', 0.01, 0.5, 0.01, pbLerpSpeed, setPbLerpSpeed, 2],
+                  ['Particle Variance', '', 0, 3, 0.1, pbVariance, setPbVariance, 2],
+                  ['Rotation Speed', '', 0, 5, 0.1, pbRotationSpeed, setPbRotationSpeed, 2],
+                  ['Depth Factor', '', 0.1, 4, 0.1, pbDepthFactor, setPbDepthFactor, 2],
+                  ['Pulse Speed', '', 0, 10, 0.1, pbPulseSpeed, setPbPulseSpeed, 2],
+                  ['Field Strength', '', 1, 30, 1, pbFieldStrength, setPbFieldStrength]
+                ] as SliderConfig[]).map(([label,,min,max,step,val,setter,dec]) => (
                   <div key={label}><div className="flex justify-between text-[10px] font-mono mb-1 text-zinc-400"><span>{label}</span><span>{dec ? (val as number).toFixed(dec) : val}</span></div><input type="range" min={min} max={max} step={step} value={val as number} onChange={e => (setter as Function)(Number(e.target.value))} className="w-full" /></div>
                 ))}
                 <div className="flex items-center justify-between py-1"><span className="text-[10px] font-mono text-zinc-400">Auto Animate</span><input type="checkbox" checked={pbAutoAnimate} onChange={e => setPbAutoAnimate(e.target.checked)} className="cursor-pointer" /></div>
@@ -508,7 +542,19 @@ export default function BackgroundStudio() {
             {/* COLOR BENDS */}
             {activeBg === 'bends' && (
               <div className="space-y-3.5 pt-2 border-t border-zinc-900/60">
-                {[['Speed','',0,2,0.05,cbSpeed,setCbSpeed,2],['Auto Rotate','',0,5,0.1,cbAutoRotate,setCbAutoRotate,2],['Scale','',0.1,3,0.05,cbScale,setCbScale,2],['Frequency','',0.1,5,0.1,cbFrequency,setCbFrequency,2],['Warp Strength','',0,5,0.1,cbWarpStrength,setCbWarpStrength,2],['Mouse Influence','',0,2,0.1,cbMouseInfluence,setCbMouseInfluence,2],['Parallax','',0,2,0.1,cbParallax,setCbParallax,2],['Noise','',0,2,0.05,cbNoise,setCbNoise,2],['Iterations','',1,4,1,cbIterations,setCbIterations],['Intensity','',0.1,5,0.1,cbIntensity,setCbIntensity,2],['Band Width','',2,20,0.5,cbBandWidth,setCbBandWidth,2]].map(([label,,min,max,step,val,setter,dec]: any) => (
+                {([
+                  ['Speed', '', 0, 2, 0.05, cbSpeed, setCbSpeed, 2],
+                  ['Auto Rotate', '', 0, 5, 0.1, cbAutoRotate, setCbAutoRotate, 2],
+                  ['Scale', '', 0.1, 3, 0.05, cbScale, setCbScale, 2],
+                  ['Frequency', '', 0.1, 5, 0.1, cbFrequency, setCbFrequency, 2],
+                  ['Warp Strength', '', 0, 5, 0.1, cbWarpStrength, setCbWarpStrength, 2],
+                  ['Mouse Influence', '', 0, 2, 0.1, cbMouseInfluence, setCbMouseInfluence, 2],
+                  ['Parallax', '', 0, 2, 0.1, cbParallax, setCbParallax, 2],
+                  ['Noise', '', 0, 2, 0.05, cbNoise, setCbNoise, 2],
+                  ['Iterations', '', 1, 4, 1, cbIterations, setCbIterations],
+                  ['Intensity', '', 0.1, 5, 0.1, cbIntensity, setCbIntensity, 2],
+                  ['Band Width', '', 2, 20, 0.5, cbBandWidth, setCbBandWidth, 2]
+                ] as SliderConfig[]).map(([label,,min,max,step,val,setter,dec]) => (
                   <div key={label}><div className="flex justify-between text-[10px] font-mono mb-1 text-zinc-400"><span>{label}</span><span>{dec ? (val as number).toFixed(dec) : val}</span></div><input type="range" min={min} max={max} step={step} value={val as number} onChange={e => (setter as Function)(Number(e.target.value))} className="w-full" /></div>
                 ))}
                 <div className="flex items-center justify-between py-1"><span className="text-[10px] font-mono text-zinc-400">Transparent BG</span><input type="checkbox" checked={cbTransparent} onChange={e => setCbTransparent(e.target.checked)} className="cursor-pointer" /></div>
@@ -518,7 +564,15 @@ export default function BackgroundStudio() {
             {/* DOT FIELD */}
             {activeBg === 'dot' && (
               <div className="space-y-3.5 pt-2 border-t border-zinc-900/60">
-                {[['Dot Radius','',0.5,12,0.1,dfDotRadius,setDfDotRadius,2],['Dot Spacing','',8,60,1,dfDotSpacing,setDfDotSpacing],['Cursor Radius','',100,800,20,dfCursorRadius,setDfCursorRadius],['Cursor Force','',0,1,0.02,dfCursorForce,setDfCursorForce,2],['Bulge Strength','',10,200,1,dfBulgeStrength,setDfBulgeStrength],['Glow Radius','',50,300,1,dfGlowRadius,setDfGlowRadius],['Wave Amplitude','',0,50,1,dfWaveAmplitude,setDfWaveAmplitude]].map(([label,,min,max,step,val,setter,dec]: any) => (
+                {([
+                  ['Dot Radius', '', 0.5, 12, 0.1, dfDotRadius, setDfDotRadius, 2],
+                  ['Dot Spacing', '', 8, 60, 1, dfDotSpacing, setDfDotSpacing],
+                  ['Cursor Radius', '', 100, 800, 20, dfCursorRadius, setDfCursorRadius],
+                  ['Cursor Force', '', 0, 1, 0.02, dfCursorForce, setDfCursorForce, 2],
+                  ['Bulge Strength', '', 10, 200, 1, dfBulgeStrength, setDfBulgeStrength],
+                  ['Glow Radius', '', 50, 300, 1, dfGlowRadius, setDfGlowRadius],
+                  ['Wave Amplitude', '', 0, 50, 1, dfWaveAmplitude, setDfWaveAmplitude]
+                ] as SliderConfig[]).map(([label,,min,max,step,val,setter,dec]) => (
                   <div key={label}><div className="flex justify-between text-[10px] font-mono mb-1 text-zinc-400"><span>{label}</span><span>{dec ? (val as number).toFixed(dec) : val}</span></div><input type="range" min={min} max={max} step={step} value={val as number} onChange={e => (setter as Function)(Number(e.target.value))} className="w-full" /></div>
                 ))}
                 <div className="flex items-center justify-between py-1"><span className="text-[10px] font-mono text-zinc-400">Bulge Only</span><input type="checkbox" checked={dfBulgeOnly} onChange={e => setDfBulgeOnly(e.target.checked)} className="cursor-pointer" /></div>
@@ -529,7 +583,13 @@ export default function BackgroundStudio() {
             {/* FLOATING LINES */}
             {activeBg === 'lines' && (
               <div className="space-y-3.5 pt-2 border-t border-zinc-900/60">
-                {[['Animation Speed','',0.1,3,0.1,flSpeed,setFlSpeed,2],['Bend Radius','',1,15,0.5,flBendRadius,setFlBendRadius,2],['Bend Strength','',-2,2,0.1,flBendStrength,setFlBendStrength,2],['Mouse Dampening','',0.01,0.5,0.01,flMouseDamping,setFlMouseDamping,2],['Parallax Strength','',0,1,0.05,flParallaxStrength,setFlParallaxStrength,2]].map(([label,,min,max,step,val,setter,dec]: any) => (
+                {([
+                  ['Animation Speed', '', 0.1, 3, 0.1, flSpeed, setFlSpeed, 2],
+                  ['Bend Radius', '', 1, 15, 0.5, flBendRadius, setFlBendRadius, 2],
+                  ['Bend Strength', '', -2, 2, 0.1, flBendStrength, setFlBendStrength, 2],
+                  ['Mouse Dampening', '', 0.01, 0.5, 0.01, flMouseDamping, setFlMouseDamping, 2],
+                  ['Parallax Strength', '', 0, 1, 0.05, flParallaxStrength, setFlParallaxStrength, 2]
+                ] as SliderConfig[]).map(([label,,min,max,step,val,setter,dec]) => (
                   <div key={label}><div className="flex justify-between text-[10px] font-mono mb-1 text-zinc-400"><span>{label}</span><span>{dec ? (val as number).toFixed(dec) : val}</span></div><input type="range" min={min} max={max} step={step} value={val as number} onChange={e => (setter as Function)(Number(e.target.value))} className="w-full" /></div>
                 ))}
                 <div className="flex items-center justify-between py-1"><span className="text-[10px] font-mono text-zinc-400">Interactive</span><input type="checkbox" checked={flInteractive} onChange={e => setFlInteractive(e.target.checked)} className="cursor-pointer" /></div>
@@ -540,7 +600,17 @@ export default function BackgroundStudio() {
             {/* LASER FLOW */}
             {activeBg === 'laser' && (
               <div className="space-y-3.5 pt-2 border-t border-zinc-900/60">
-                {[['Flow Speed','',0.05,2,0.05,lfFlowSpeed,setLfFlowSpeed,2],['Vertical Sizing','',0.5,2,0.05,lfVerticalSizing,setLfVerticalSizing,2],['Horizontal Sizing','',0.1,2,0.05,lfHorizontalSizing,setLfHorizontalSizing,2],['Fog Intensity','',0,1,0.05,lfFogIntensity,setLfFogIntensity,2],['Fog Scale','',0.1,2,0.05,lfFogScale,setLfFogScale,2],['Beam Sway','',0,30,1,lfWispSpeed,setLfWispSpeed],['Glow Intensity','',0,20,0.5,lfWispIntensity,setLfWispIntensity,2],['Horizontal Beam Offset','',-1,1,0.05,lfHorizontalBeamOffset,setLfHorizontalBeamOffset,2],['Vertical Beam Offset','',-0.5,0.5,0.05,lfVerticalBeamOffset,setLfVerticalBeamOffset,2]].map(([label,,min,max,step,val,setter,dec]: any) => (
+                {([
+                  ['Flow Speed', '', 0.05, 2, 0.05, lfFlowSpeed, setLfFlowSpeed, 2],
+                  ['Vertical Sizing', '', 0.5, 2, 0.05, lfVerticalSizing, setLfVerticalSizing, 2],
+                  ['Horizontal Sizing', '', 0.1, 2, 0.05, lfHorizontalSizing, setLfHorizontalSizing, 2],
+                  ['Fog Intensity', '', 0, 1, 0.05, lfFogIntensity, setLfFogIntensity, 2],
+                  ['Fog Scale', '', 0.1, 2, 0.05, lfFogScale, setLfFogScale, 2],
+                  ['Beam Sway', '', 0, 30, 1, lfWispSpeed, setLfWispSpeed],
+                  ['Glow Intensity', '', 0, 20, 0.5, lfWispIntensity, setLfWispIntensity, 2],
+                  ['Horizontal Beam Offset', '', -1, 1, 0.05, lfHorizontalBeamOffset, setLfHorizontalBeamOffset, 2],
+                  ['Vertical Beam Offset', '', -0.5, 0.5, 0.05, lfVerticalBeamOffset, setLfVerticalBeamOffset, 2]
+                ] as SliderConfig[]).map(([label,,min,max,step,val,setter,dec]) => (
                   <div key={label}><div className="flex justify-between text-[10px] font-mono mb-1 text-zinc-400"><span>{label}</span><span>{dec ? (val as number).toFixed(dec) : val}</span></div><input type="range" min={min} max={max} step={step} value={val as number} onChange={e => (setter as Function)(Number(e.target.value))} className="w-full" /></div>
                 ))}
               </div>
@@ -550,7 +620,16 @@ export default function BackgroundStudio() {
             {activeBg === 'rays' && (
               <div className="space-y-3.5 pt-2 border-t border-zinc-900/60">
                 <div><label className="block text-[10px] font-mono text-zinc-400 mb-1.5">Rays Origin</label><select value={lrOrigin} onChange={e => setLrOrigin(e.target.value as any)} className="select-machined w-full py-1 px-2.5 bg-zinc-900 border-zinc-800 text-xs font-mono"><option value="top-center">Top Center</option><option value="center">Center</option><option value="top-left">Top Left</option><option value="top-right">Top Right</option></select></div>
-                {[['Rays Speed','',0.1,3,0.1,lrSpeed,setLrSpeed,2],['Light Spread','',0.2,2,0.05,lrSpread,setLrSpread,2],['Ray Length','',0.5,4,0.1,lrLength,setLrLength,2],['Fade Distance','',0.2,2.5,0.1,lrFadeDistance,setLrFadeDistance,2],['Saturation','',0,1,0.05,lrSaturation,setLrSaturation,2],['Mouse Influence','',0.01,0.5,0.01,lrMouseInfluence,setLrMouseInfluence,2],['Noise Amount','',0,1,0.05,lrNoise,setLrNoise,2],['Distortion','',0,1,0.05,lrDistortion,setLrDistortion,2]].map(([label,,min,max,step,val,setter,dec]: any) => (
+                {([
+                  ['Rays Speed', '', 0.1, 3, 0.1, lrSpeed, setLrSpeed, 2],
+                  ['Light Spread', '', 0.2, 2, 0.05, lrSpread, setLrSpread, 2],
+                  ['Ray Length', '', 0.5, 4, 0.1, lrLength, setLrLength, 2],
+                  ['Fade Distance', '', 0.2, 2.5, 0.1, lrFadeDistance, setLrFadeDistance, 2],
+                  ['Saturation', '', 0, 1, 0.05, lrSaturation, setLrSaturation, 2],
+                  ['Mouse Influence', '', 0.01, 0.5, 0.01, lrMouseInfluence, setLrMouseInfluence, 2],
+                  ['Noise Amount', '', 0, 1, 0.05, lrNoise, setLrNoise, 2],
+                  ['Distortion', '', 0, 1, 0.05, lrDistortion, setLrDistortion, 2]
+                ] as SliderConfig[]).map(([label,,min,max,step,val,setter,dec]) => (
                   <div key={label}><div className="flex justify-between text-[10px] font-mono mb-1 text-zinc-400"><span>{label}</span><span>{dec ? (val as number).toFixed(dec) : val}</span></div><input type="range" min={min} max={max} step={step} value={val as number} onChange={e => (setter as Function)(Number(e.target.value))} className="w-full" /></div>
                 ))}
                 <div className="flex items-center justify-between py-1"><span className="text-[10px] font-mono text-zinc-400">Pulsating</span><input type="checkbox" checked={lrPulsating} onChange={e => setLrPulsating(e.target.checked)} className="cursor-pointer" /></div>

@@ -50,7 +50,7 @@ export default function ToolWrapper() {
             {/* Tool Switcher Clickable Area */}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="flex items-center gap-2 text-left cursor-pointer focus:outline-none hover:text-zinc-300 text-zinc-100 font-semibold"
+              className="flex items-center gap-2 text-left cursor-pointer focus-visible:ring-1 focus-visible:ring-zinc-500 focus-visible:outline-none hover:text-zinc-300 text-zinc-100 font-semibold rounded px-1 -mx-1"
             >
               <div className="w-5 h-5 rounded bg-black border border-zinc-850 flex items-center justify-center text-zinc-300">
                 <ActiveIcon className="w-3.5 h-3.5" />

@@ -25,7 +25,7 @@ interface ControlField {
   id: string;
   label: string;
   type: 'slider' | 'toggle' | 'color' | 'select';
-  default: any;
+  default: string | number | boolean;
   min?: number;
   max?: number;
   step?: number;

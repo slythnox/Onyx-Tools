@@ -220,14 +220,15 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
       });
 
       lenis.on('scroll', handleScroll);
+      lenisRef.current = lenis;
 
       const raf = (time: number) => {
+        if (!lenisRef.current) return;
         lenis.raf(time);
         animationFrameRef.current = requestAnimationFrame(raf);
       };
       animationFrameRef.current = requestAnimationFrame(raf);
 
-      lenisRef.current = lenis;
       return lenis;
     } else {
       const scroller = scrollerRef.current;
@@ -249,14 +250,15 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
       });
 
       lenis.on('scroll', handleScroll);
+      lenisRef.current = lenis;
 
       const raf = (time: number) => {
+        if (!lenisRef.current) return;
         lenis.raf(time);
         animationFrameRef.current = requestAnimationFrame(raf);
       };
       animationFrameRef.current = requestAnimationFrame(raf);
 
-      lenisRef.current = lenis;
       return lenis;
     }
   }, [handleScroll, useWindowScroll]);
@@ -297,6 +299,7 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
       }
       if (lenisRef.current) {
         lenisRef.current.destroy();
+        lenisRef.current = null;
       }
       stackCompletedRef.current = false;
       cardsRef.current = [];
