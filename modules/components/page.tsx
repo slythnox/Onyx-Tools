@@ -15,6 +15,7 @@ import GlassAppButtons from '@/components/ui/GlassAppButtons';
 import Strands from '@/components/ui/Strands';
 import Magnet from '@/components/ui/Magnet';
 import FluidGlass from '@/components/ui/FluidGlass';
+import Dock from '@/components/ui/Dock';
 
 // TYPES
 type ComponentTab = 'preview' | 'code';
@@ -158,6 +159,18 @@ const COMPONENTS: ComponentConfig[] = [
     name: 'Glass App Buttons',
     description: 'Neo-glassmorphic app button selectors with hovering gradient highlights.',
     controls: []
+  },
+  {
+    id: 'dock',
+    name: 'Dock',
+    description: 'macOS-style magnifying icon dock with spring physics and hover labels.',
+    controls: [
+      { id: 'panelHeight', label: 'Panel Height (px)', type: 'slider', default: 68, min: 40, max: 120, step: 4 },
+      { id: 'baseItemSize', label: 'Base Item Size (px)', type: 'slider', default: 50, min: 30, max: 80, step: 2 },
+      { id: 'magnification', label: 'Magnification (px)', type: 'slider', default: 70, min: 50, max: 120, step: 2 },
+      { id: 'distance', label: 'Magnet Distance (px)', type: 'slider', default: 200, min: 80, max: 400, step: 20 },
+      { id: 'dockHeight', label: 'Dock Container Height (px)', type: 'slider', default: 256, min: 100, max: 400, step: 8 }
+    ]
   }
 ];
 
@@ -440,6 +453,33 @@ export default function Demo() {
   return (
     <div className="flex items-center justify-center min-h-[150px] bg-black">
       <GlassAppButtons />
+    </div>
+  );
+}`;
+
+        case 'dock':
+          return `import Dock from './Dock';
+import { Home, Archive, User, Settings, Bell } from 'lucide-react';
+
+export default function Demo() {
+  const items = [
+    { icon: <Home size={18} />, label: 'Home', onClick: () => alert('Home!') },
+    { icon: <Archive size={18} />, label: 'Archive', onClick: () => alert('Archive!') },
+    { icon: <User size={18} />, label: 'Profile', onClick: () => alert('Profile!') },
+    { icon: <Bell size={18} />, label: 'Notifications', onClick: () => alert('Notifications!') },
+    { icon: <Settings size={18} />, label: 'Settings', onClick: () => alert('Settings!') },
+  ];
+
+  return (
+    <div className="relative flex items-end justify-center w-full h-40 bg-black">
+      <Dock
+        items={items}
+        panelHeight={${controlValues.panelHeight ?? 68}}
+        baseItemSize={${controlValues.baseItemSize ?? 50}}
+        magnification={${controlValues.magnification ?? 70}}
+        distance={${controlValues.distance ?? 200}}
+        dockHeight={${controlValues.dockHeight ?? 256}}
+      />
     </div>
   );
 }`;
@@ -1447,10 +1487,79 @@ export default function Demo() {
 
         case 'glass-app-buttons':
           return `/* This component is fully styled using utility classes from Tailwind CSS. No additional CSS stylesheets are required. */`;
+
+        case 'dock':
+          return `.dock-outer {
+  margin: 0 0.5rem;
+  display: flex;
+  max-width: 100%;
+  align-items: center;
+}
+
+.dock-panel {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: flex-end;
+  width: fit-content;
+  gap: 1rem;
+  border-radius: 1rem;
+  background-color: #120F17;
+  border: 1px solid #222;
+  padding: 0 0.5rem 0.5rem;
+}
+
+.dock-item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background-color: #120F17;
+  border: 1px solid #222;
+  box-shadow:
+    0 4px 6px -1px rgba(0,0,0,0.1),
+    0 2px 4px -1px rgba(0,0,0,0.06);
+  cursor: pointer;
+  outline: none;
+  color: #fff;
+  transition: border-color 0.2s ease;
+}
+
+.dock-item:hover { border-color: #444; }
+
+.dock-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #c4b5fd;
+}
+
+.dock-label {
+  position: absolute;
+  top: -1.5rem;
+  left: 50%;
+  width: fit-content;
+  white-space: pre;
+  border-radius: 0.375rem;
+  border: 1px solid #333;
+  background-color: #1a1628;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+  font-family: monospace;
+  color: #fff;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 50;
+}`;
       }
     }
 
     switch (activeAnimId) {
+      case 'dock':
+        return `/* Source from Dock.tsx — see Full Component Source in the integration prompt */`;
       case 'animated-list':
         return `/* Source from AnimatedList.tsx */`;
       case 'scroll-stack':
@@ -2051,6 +2160,28 @@ export default BackToTop;`;
             <GlassAppButtons />
           </div>
         );
+      case 'dock': {
+        const dockItems = [
+          { icon: <span style={{ fontSize: 18 }}>🏠</span>, label: 'Home', onClick: () => {} },
+          { icon: <span style={{ fontSize: 18 }}>📁</span>, label: 'Files', onClick: () => {} },
+          { icon: <span style={{ fontSize: 18 }}>⭐</span>, label: 'Starred', onClick: () => {} },
+          { icon: <span style={{ fontSize: 18 }}>🔔</span>, label: 'Alerts', onClick: () => {} },
+          { icon: <span style={{ fontSize: 18 }}>⚙️</span>, label: 'Settings', onClick: () => {} },
+        ];
+        return (
+          <div className="relative w-full h-48 flex items-end justify-center bg-zinc-950 rounded-xl border border-zinc-900 overflow-hidden">
+            <Dock
+              key={triggerKey}
+              items={dockItems}
+              panelHeight={controlValues.panelHeight ?? 68}
+              baseItemSize={controlValues.baseItemSize ?? 50}
+              magnification={controlValues.magnification ?? 70}
+              distance={controlValues.distance ?? 200}
+              dockHeight={controlValues.dockHeight ?? 256}
+            />
+          </div>
+        );
+      }
       default:
         return null;
     }
