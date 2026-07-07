@@ -197,10 +197,7 @@ export default function DocsPage() {
                 <h4 className="font-mono text-xs font-bold text-white mb-1">Scroll Stack</h4>
                 <p className="text-[11px] text-zinc-500">Lenis-driven sticky stacking layout cards with scales, rotates, and blurs.</p>
               </div>
-              <div className="p-4 rounded border border-zinc-900 bg-zinc-950/40">
-                <h4 className="font-mono text-xs font-bold text-white mb-1">Bubble Menu</h4>
-                <p className="text-[11px] text-zinc-500">GSAP animated overlay menu using absolute positioning &amp; stagger paths.</p>
-              </div>
+
               <div className="p-4 rounded border border-zinc-900 bg-zinc-950/40">
                 <h4 className="font-mono text-xs font-bold text-white mb-1">Strands</h4>
                 <p className="text-[11px] text-zinc-500">High-performance WebGL mesh animation shader using the OGL canvas library.</p>

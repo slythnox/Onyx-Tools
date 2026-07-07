@@ -4,7 +4,7 @@ import { TOOLS_REGISTRY } from '@/registry/tools';
 import GradientBlinds from '@/components/ui/GradientBlinds';
 
 const COMPONENTS = [
-  'Animated List','Scroll Stack','Bubble Menu','Magic Bento',
+  'Animated List','Scroll Stack','Magic Bento',
   'Strands','Magnet','Fluid Glass','Dock',
   'Sparkle Button','Matrix Rain','Glass Buttons','Back to Top',
 ];
