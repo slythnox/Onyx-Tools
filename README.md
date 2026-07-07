@@ -189,8 +189,6 @@ The dev server starts at `http://localhost:5173` by default.
 
 ## Design Philosophy
 
-**Local-first.** Every operation happens in the browser. No data leaves the device. This is not a feature — it is a constraint that shapes every architectural decision.
-
 **Performance by default.** Tool modules load lazily. Bundles are split per route. WebGL contexts are reused. Animation frames are throttled. The goal is that heavy tools feel light.
 
 **No abstractions without purpose.** The codebase avoids framework layers and wrapper patterns unless they solve a concrete problem. The tool registry is a flat array. Routes are a switch statement. Exports are direct DOM operations.
@@ -212,35 +210,6 @@ The dev server starts at `http://localhost:5173` by default.
 | Scroll animation | Lenis instances are fully terminated on component unmount |
 | Export pipeline | DOM rendering via `html-to-image` runs off the main thread where possible |
 | Bundle size | Three.js is isolated to background modules; never loaded for non-WebGL tools |
-
----
-
-## Roadmap
-
-**Completed**
-
-- [x] Code Snippets studio with retina PNG export
-- [x] Icon Studio with SVG, PNG, and JSX export
-- [x] OKLCH Generator with semantic token scale
-- [x] Background Studio with 7 WebGL/CSS presets
-- [x] Text Animations studio
-- [x] Component catalog with live preview and source export
-- [x] Keyboard navigation and `focus-visible` accessibility
-- [x] Production build pipeline with Vite code splitting
-- [x] Docs page
-
-**In Progress**
-
-- [ ] Improved mobile layout for tool workspaces
-- [ ] Additional background presets
-
-**Planned**
-
-- [ ] Image optimizer (client-side compression)
-- [ ] Font pairing preview tool
-- [ ] Advanced gradient builder
-- [ ] SVG path editor
-- [ ] Keyboard shortcut reference overlay
 
 ---
 
@@ -279,7 +248,7 @@ For new tools, follow the existing module structure and register the tool in `re
 
 ## License
 
-MIT — see [LICENSE](LICENSE) for details.
+MIT 
 
 ---
 
