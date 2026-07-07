@@ -13,6 +13,8 @@ import SparkleButton from '@/components/ui/SparkleButton';
 import JapaneseMatrix from '@/components/ui/JapaneseMatrix';
 import BackToTop from '@/components/ui/BackToTop';
 import GlassAppButtons from '@/components/ui/GlassAppButtons';
+import Strands from '@/components/ui/Strands';
+import Magnet from '@/components/ui/Magnet';
 
 // TYPES
 type ComponentTab = 'preview' | 'code';
@@ -86,6 +88,36 @@ const COMPONENTS: ComponentConfig[] = [
       { id: 'spotlightRadius', label: 'Spotlight Radius (px)', type: 'slider', default: 300, min: 100, max: 600, step: 20 },
       { id: 'particleCount', label: 'Particle Count', type: 'slider', default: 12, min: 4, max: 32, step: 2 },
       { id: 'glowColor', label: 'Glow Color Accent', type: 'color', default: '#8400ff' }
+    ]
+  },
+  {
+    id: 'strands',
+    name: 'Strands',
+    description: 'Dynamic flowing strands of glowing light (uses OGL framework).',
+    controls: [
+      { id: 'count', label: 'Strand Count', type: 'slider', default: 3, min: 1, max: 12, step: 1 },
+      { id: 'speed', label: 'Speed multiplier', type: 'slider', default: 0.5, min: 0.1, max: 2.0, step: 0.1 },
+      { id: 'amplitude', label: 'Wave Amplitude', type: 'slider', default: 1.0, min: 0.2, max: 3.0, step: 0.1 },
+      { id: 'waviness', label: 'Waviness density', type: 'slider', default: 1.0, min: 0.2, max: 3.0, step: 0.1 },
+      { id: 'thickness', label: 'Thickness factor', type: 'slider', default: 0.7, min: 0.1, max: 3.0, step: 0.1 },
+      { id: 'glow', label: 'Glow intensity', type: 'slider', default: 2.6, min: 0.5, max: 5.0, step: 0.1 },
+      { id: 'taper', label: 'Taper curve', type: 'slider', default: 3.0, min: 0.5, max: 10.0, step: 0.5 },
+      { id: 'spread', label: 'Strand Spread', type: 'slider', default: 1.0, min: 0.2, max: 3.0, step: 0.1 },
+      { id: 'scale', label: 'Overall scale', type: 'slider', default: 1.5, min: 0.5, max: 3.0, step: 0.1 },
+      { id: 'glass', label: 'Enable Glass Orb', type: 'toggle', default: false },
+      { id: 'refraction', label: 'Glass Refraction', type: 'slider', default: 1.0, min: 0.0, max: 3.0, step: 0.1 },
+      { id: 'dispersion', label: 'Glass Dispersion', type: 'slider', default: 1.0, min: 0.0, max: 3.0, step: 0.1 },
+      { id: 'glassSize', label: 'Glass Sphere size', type: 'slider', default: 1.0, min: 0.2, max: 2.0, step: 0.1 }
+    ]
+  },
+  {
+    id: 'magnet',
+    name: 'Magnet',
+    description: 'An interactive pull element that tracks proximity to mouse cursor.',
+    controls: [
+      { id: 'padding', label: 'Active Proximity Padding (px)', type: 'slider', default: 100, min: 20, max: 300, step: 10 },
+      { id: 'disabled', label: 'Disable Magnet effect', type: 'toggle', default: false },
+      { id: 'magnetStrength', label: 'Magnet pull damping factor', type: 'slider', default: 2, min: 1, max: 10, step: 1 }
     ]
   },
   {
@@ -278,6 +310,49 @@ export default function Demo() {
       particleCount={${controlValues.particleCount ?? 12}}
       glowColor="${hexToRgbStr(controlValues.glowColor || '#8400ff')}"
     />
+  );
+}`;
+
+        case 'strands':
+          return `import Strands from './Strands';
+
+export default function Demo() {
+  return (
+    <div style={{ width: '100%', height: '600px', position: 'relative' }}>
+      <Strands
+        colors={["#FF4242", "#7C3AED", "#06B6D4", "#EAB308"]}
+        count={${controlValues.count ?? 3}}
+        speed={${controlValues.speed ?? 0.5}}
+        amplitude={${controlValues.amplitude ?? 1}}
+        waviness={${controlValues.waviness ?? 1}}
+        thickness={${controlValues.thickness ?? 0.7}}
+        glow={${controlValues.glow ?? 2.6}}
+        taper={${controlValues.taper ?? 3}}
+        spread={${controlValues.spread ?? 1}}
+        scale={${controlValues.scale ?? 1.5}}
+        glass={${controlValues.glass === true}}
+        refraction={${controlValues.refraction ?? 1}}
+        dispersion={${controlValues.dispersion ?? 1}}
+        glassSize={${controlValues.glassSize ?? 1}}
+      />
+    </div>
+  );
+}`;
+
+        case 'magnet':
+          return `import Magnet from './Magnet';
+
+export default function Demo() {
+  return (
+    <div className="flex items-center justify-center min-h-[200px] bg-black text-white">
+      <Magnet
+        padding={${controlValues.padding ?? 100}}
+        disabled={${controlValues.disabled === true}}
+        magnetStrength={${controlValues.magnetStrength ?? 2}}
+      >
+        <p>Star React Bits on GitHub!</p>
+      </Magnet>
+    </div>
   );
 }`;
 
@@ -948,6 +1023,23 @@ export default function Demo() {
   position: relative;
   user-select: none;
 }`;
+
+        case 'strands':
+          return `.strands-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+}
+
+.strands-container canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}`;
+
+        case 'magnet':
+          return `/* This component is fully styled using inline dynamic styles. No additional CSS stylesheets are required. */`;
 
         case 'terminal-card':
           return `.terminal-container {
@@ -2085,7 +2177,7 @@ export default function BubbleMenu({
               duration: animationDuration,
               ease: 'power3.out'
             },
-            \`-=\${animationDuration * 0.9}\`
+            \`-=\\\\\${animationDuration * 0.9}\`
           );
         }
       });
@@ -2265,7 +2357,7 @@ const updateCardGlowProperties = (card: HTMLElement, mouseX: number, mouseY: num
   const relativeX = ((mouseX - rect.left) / rect.width) * 100;
   const relativeY = ((mouseY - rect.top) / rect.height) * 100;
 
-  card.style.setProperty('--glow-x', \`\${relativeX}%\blank\`);
+  card.style.setProperty('--glow-x', \`\${relativeX}%\`);
   card.style.setProperty('--glow-y', \`\${relativeY}%\`);
   card.style.setProperty('--glow-intensity', glow.toString());
   card.style.setProperty('--glow-radius', \`\${radius}px\`);
@@ -2873,6 +2965,440 @@ export const MagicBento: React.FC<BentoProps> = ({
 
 export default MagicBento;`;
 
+      case 'strands':
+        return `import { Renderer, Program, Mesh, Color, Triangle, RenderTarget } from 'ogl';
+import { useEffect, useRef, CSSProperties } from 'react';
+import './Strands.css';
+
+const MAX_STRANDS = 12;
+const MAX_COLORS = 8;
+
+const VERT = \`#version 300 es
+in vec2 position;
+void main() {
+  gl_Position = vec4(position, 0.0, 1.0);
+}
+\`;
+
+const FRAG = \`#version 300 es
+precision highp float;
+
+uniform float uTime;
+uniform vec2 uResolution;
+uniform vec3 uColors[\${MAX_COLORS}];
+uniform int uColorCount;
+uniform int uStrandCount;
+uniform float uSpeed;
+uniform float uAmplitude;
+uniform float uWaviness;
+uniform float uThickness;
+uniform float uGlow;
+uniform float uTaper;
+uniform float uSpread;
+uniform float uHueShift;
+uniform float uIntensity;
+uniform float uOpacity;
+uniform float uScale;
+uniform float uSaturation;
+
+out vec4 fragColor;
+
+const float PI = 3.14159265;
+
+vec3 spectrum(float t) {
+  return 0.5 + 0.5 * cos(2.0 * PI * (t + vec3(0.00, 0.33, 0.67)));
+}
+
+vec3 samplePalette(float t) {
+  t = fract(t);
+  float scaled = t * float(uColorCount);
+  int idx = int(floor(scaled));
+  float blend = fract(scaled);
+  int nextIdx = idx + 1;
+  if (nextIdx >= uColorCount) nextIdx = 0;
+  return mix(uColors[idx], uColors[nextIdx], blend);
+}
+
+vec3 strandColor(float t) {
+  if (uColorCount > 0) return samplePalette(t);
+  return spectrum(t);
+}
+
+void main() {
+  vec2 uv = (gl_FragCoord.xy - 0.5 * uResolution) / uResolution.y;
+  uv /= max(uScale, 0.0001);
+
+  float e = 0.06 + uIntensity * 0.94;
+  float env = pow(max(cos(uv.x * PI * 1.3), 0.0), uTaper);
+
+  vec3 col = vec3(0.0);
+
+  for (int i = 0; i < \${MAX_STRANDS}; i++) {
+    if (i >= uStrandCount) break;
+
+    float fi = float(i);
+    float ph = fi * 1.7 * uSpread;
+    float freq = (2.0 + fi * 0.35) * uWaviness;
+    float spd = 1.4 + fi * 1.2;
+
+    float tt = uTime * uSpeed;
+    float w = sin(uv.x * freq + tt * spd + ph) * 0.60
+            + sin(uv.x * freq * 1.1 - tt * spd * 0.7 + ph * 1.7) * 0.40;
+
+    float amp = (0.1 + 0.02 * e) * env * uAmplitude;
+    float y = w * amp;
+
+    float d = abs(uv.y - y);
+    float thick = (0.001 + 0.05 * e) * (0.35 + env) * uThickness;
+    float g = thick / (d + thick * 0.45);
+    g = g * g;
+
+    float h = fi / float(uStrandCount) + uv.x * 0.30 + uTime * 0.04 + uHueShift;
+    col += strandColor(h) * g * env;
+  }
+
+  col *= 0.45 + 0.7 * e;
+  col = 1.0 - exp(-col * uGlow);
+
+  float gray = dot(col, vec3(0.2126, 0.7152, 0.0722));
+  col = max(mix(vec3(gray), col, uSaturation), 0.0);
+
+  float lum = max(max(col.r, col.g), col.b);
+  float alpha = clamp(lum, 0.0, 1.0) * uOpacity;
+
+  fragColor = vec4(col * uOpacity, alpha);
+}
+\`;
+
+const GLASS_FRAG = \`#version 300 es
+precision highp float;
+
+uniform sampler2D uScene;
+uniform vec2 uResolution;
+uniform float uRadius;
+uniform float uRefraction;
+uniform float uDispersion;
+
+out vec4 fragColor;
+
+vec2 toUv(vec2 p) {
+  return p * (uResolution.y / uResolution) + 0.5;
+}
+
+void main() {
+  vec2 p = (gl_FragCoord.xy - 0.5 * uResolution) / uResolution.y;
+  float d = length(p);
+  float r = uRadius;
+
+  float edge = fwidth(d) * 1.5;
+  float mask = 1.0 - smoothstep(r - edge, r + edge, d);
+  if (mask <= 0.0) {
+    fragColor = vec4(0.0);
+    return;
+  }
+
+  float z = sqrt(max(r * r - d * d, 0.0)) / r;
+  float nd = d / r;
+
+  vec2 dir = d > 0.0 ? p / d : vec2(0.0);
+  float lens = smoothstep(0.85, 1.0, nd) * pow(nd, 6.0);
+  vec2 offset = -dir * lens * uRefraction * 0.15;
+  vec2 disp = -dir * lens * uDispersion * 0.012;
+
+  vec3 light;
+  light.r = texture(uScene, toUv(p + offset - disp)).r;
+  light.g = texture(uScene, toUv(p + offset)).g;
+  light.b = texture(uScene, toUv(p + offset + disp)).b;
+
+  float fres = pow(1.0 - z, 3.0);
+  vec3 rim = vec3(1.0) * fres * 0.18;
+
+  vec2 lightDir = normalize(vec2(-0.55, 0.6));
+  float spec = pow(max(dot(p / max(r, 1e-4), lightDir), 0.0), 6.0);
+  spec *= smoothstep(r, r * 0.55, d);
+
+  vec3 emissive = light + rim + vec3(spec) * 0.4;
+  float emissiveA = clamp(max(max(emissive.r, emissive.g), emissive.b), 0.0, 1.0);
+
+  float bodyA = 0.05 + fres * 0.05;
+
+  float outA = emissiveA + bodyA * (1.0 - emissiveA);
+  vec3 outRGB = emissive;
+
+  outRGB *= mask;
+  outA *= mask;
+
+  fragColor = vec4(outRGB, outA);
+}
+\`;
+
+export interface StrandsProps {
+  colors?: string[];
+  count?: number;
+  speed?: number;
+  amplitude?: number;
+  waviness?: number;
+  thickness?: number;
+  glow?: number;
+  taper?: number;
+  spread?: number;
+  hueShift?: number;
+  intensity?: number;
+  saturation?: number;
+  opacity?: number;
+  scale?: number;
+  glass?: boolean;
+  refraction?: number;
+  dispersion?: number;
+  glassSize?: number;
+  className?: string;
+  style?: CSSProperties;
+}
+
+const buildPalette = (colors: string[]): number[][] => {
+  const filled = colors && colors.length ? colors : ['#ffffff'];
+  const padded: number[][] = [];
+  for (let i = 0; i < MAX_COLORS; i++) {
+    const hex = filled[i] ?? filled[filled.length - 1];
+    const c = new Color(hex);
+    padded.push([c.r, c.g, c.b]);
+  }
+  return padded;
+};
+
+export default function Strands({
+  colors = ['#FF4242', '#7C3AED', '#06B6D4', '#EAB308'],
+  count = 3,
+  speed = 0.5,
+  amplitude = 1,
+  waviness = 1,
+  thickness = 0.7,
+  glow = 2.6,
+  taper = 3,
+  spread = 1,
+  hueShift = 0,
+  intensity = 0.6,
+  saturation = 1.5,
+  opacity = 1,
+  scale = 1.5,
+  glass = false,
+  refraction = 1,
+  dispersion = 1,
+  glassSize = 1,
+  className = '',
+  style
+}: StrandsProps) {
+  const propsRef = useRef<Required<Omit<StrandsProps, 'className' | 'style'>>>({
+    colors, count, speed, amplitude, waviness, thickness, glow, taper, spread, hueShift, intensity, saturation, opacity, scale, glass, refraction, dispersion, glassSize
+  });
+
+  propsRef.current = {
+    colors, count, speed, amplitude, waviness, thickness, glow, taper, spread, hueShift, intensity, saturation, opacity, scale, glass, refraction, dispersion, glassSize
+  };
+
+  const ctnDom = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ctn = ctnDom.current;
+    if (!ctn) return;
+
+    const renderer = new Renderer({ alpha: true, multipliedAlpha: true, antialias: true });
+    const gl = renderer.gl;
+    gl.clearColor(0, 0, 0, 0);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+
+    const geometry = new Triangle(gl);
+    if (geometry.attributes.uv) delete geometry.attributes.uv;
+
+    const program = new Program(gl, {
+      vertex: VERT,
+      fragment: FRAG,
+      uniforms: {
+        uTime: { value: 0 },
+        uResolution: { value: [ctn.offsetWidth, ctn.offsetHeight] },
+        uColors: { value: buildPalette(propsRef.current.colors) },
+        uColorCount: { value: Math.min(propsRef.current.colors.length, MAX_COLORS) },
+        uStrandCount: { value: Math.min(propsRef.current.count, MAX_STRANDS) },
+        uSpeed: { value: speed },
+        uAmplitude: { value: amplitude },
+        uWaviness: { value: waviness },
+        uThickness: { value: thickness },
+        uGlow: { value: glow },
+        uTaper: { value: taper },
+        uSpread: { value: spread },
+        uHueShift: { value: hueShift },
+        uIntensity: { value: intensity },
+        uOpacity: { value: opacity },
+        uScale: { value: scale },
+        uSaturation: { value: saturation }
+      }
+    });
+
+    const mesh = new Mesh(gl, { geometry, program });
+    const renderTarget = new RenderTarget(gl, { width: ctn.offsetWidth, height: ctn.offsetHeight });
+
+    const glassProgram = new Program(gl, {
+      vertex: VERT,
+      fragment: GLASS_FRAG,
+      uniforms: {
+        uScene: { value: renderTarget.texture },
+        uResolution: { value: [ctn.offsetWidth, ctn.offsetHeight] },
+        uRadius: { value: 0.46 * glassSize },
+        uRefraction: { value: refraction },
+        uDispersion: { value: dispersion }
+      }
+    });
+    const glassMesh = new Mesh(gl, { geometry, program: glassProgram });
+
+    ctn.appendChild(gl.canvas);
+
+    function resize() {
+      if (!ctn) return;
+      const width = ctn.offsetWidth;
+      const height = ctn.offsetHeight;
+      renderer.setSize(width, height);
+      program.uniforms.uResolution.value = [width, height];
+      renderTarget.setSize(width, height);
+      glassProgram.uniforms.uResolution.value = [width, height];
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    let animateId = 0;
+    const update = (t: number) => {
+      animateId = requestAnimationFrame(update);
+      const current = propsRef.current;
+      program.uniforms.uTime.value = t * 0.001;
+      program.uniforms.uColors.value = buildPalette(current.colors);
+      program.uniforms.uColorCount.value = Math.min(current.colors.length, MAX_COLORS);
+      program.uniforms.uStrandCount.value = Math.min(Math.max(Math.round(current.count), 1), MAX_STRANDS);
+      program.uniforms.uSpeed.value = current.speed;
+      program.uniforms.uAmplitude.value = current.amplitude;
+      program.uniforms.uWaviness.value = current.waviness;
+      program.uniforms.uThickness.value = current.thickness;
+      program.uniforms.uGlow.value = current.glow;
+      program.uniforms.uTaper.value = current.taper;
+      program.uniforms.uSpread.value = current.spread;
+      program.uniforms.uHueShift.value = current.hueShift;
+      program.uniforms.uIntensity.value = current.intensity;
+      program.uniforms.uOpacity.value = current.opacity;
+      program.uniforms.uScale.value = current.scale;
+      program.uniforms.uSaturation.value = current.saturation;
+
+      if (current.glass) {
+        renderer.render({ scene: mesh, target: renderTarget });
+        glassProgram.uniforms.uScene.value = renderTarget.texture;
+        glassProgram.uniforms.uRefraction.value = current.refraction;
+        glassProgram.uniforms.uDispersion.value = current.dispersion;
+        glassProgram.uniforms.uRadius.value = 0.46 * current.glassSize;
+        renderer.render({ scene: glassMesh });
+      } else {
+        renderer.render({ scene: mesh });
+      }
+    };
+    animateId = requestAnimationFrame(update);
+
+    return () => {
+      cancelAnimationFrame(animateId);
+      window.removeEventListener('resize', resize);
+      if (ctn && gl.canvas.parentNode === ctn) {
+        ctn.removeChild(gl.canvas);
+      }
+      gl.getExtension('WEBGL_lose_context')?.loseContext();
+    };
+  }, []);
+
+  return <div ref={ctnDom} className={\`strands-container \${className}\`} style={style} />;
+}`;
+
+      case 'magnet':
+        return `import React, { useState, useEffect, useRef, ReactNode, HTMLAttributes } from 'react';
+
+interface MagnetProps extends HTMLAttributes<HTMLDivElement> {
+  children: ReactNode;
+  padding?: number;
+  disabled?: boolean;
+  magnetStrength?: number;
+  activeTransition?: string;
+  inactiveTransition?: string;
+  wrapperClassName?: string;
+  innerClassName?: string;
+}
+
+export const Magnet: React.FC<MagnetProps> = ({
+  children,
+  padding = 100,
+  disabled = false,
+  magnetStrength = 2,
+  activeTransition = 'transform 0.3s ease-out',
+  inactiveTransition = 'transform 0.5s ease-in-out',
+  wrapperClassName = '',
+  innerClassName = '',
+  ...props
+}) => {
+  const [isActive, setIsActive] = useState<boolean>(false);
+  const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const magnetRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (disabled) {
+      setPosition({ x: 0, y: 0 });
+      return;
+    }
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!magnetRef.current) return;
+
+      const { left, top, width, height } = magnetRef.current.getBoundingClientRect();
+      const centerX = left + width / 2;
+      const centerY = top + height / 2;
+
+      const distX = Math.abs(centerX - e.clientX);
+      const distY = Math.abs(centerY - e.clientY);
+
+      if (distX < width / 2 + padding && distY < height / 2 + padding) {
+        setIsActive(true);
+        const offsetX = (e.clientX - centerX) / magnetStrength;
+        const offsetY = (e.clientY - centerY) / magnetStrength;
+        setPosition({ x: offsetX, y: offsetY });
+      } else {
+        setIsActive(false);
+        setPosition({ x: 0, y: 0 });
+      }
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [padding, disabled, magnetStrength]);
+
+  const transitionStyle = isActive ? activeTransition : inactiveTransition;
+
+  return (
+    <div
+      ref={magnetRef}
+      className={wrapperClassName}
+      style={{ position: 'relative', display: 'inline-block' }}
+      {...props}
+    >
+      <div
+        className={innerClassName}
+        style={{
+          transform: \`translate3d(\${position.x}px, \${position.y}px, 0)\`,
+          transition: transitionStyle,
+          willChange: 'transform'
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+};
+
+export default Magnet;`;
+
       case 'terminal-card':
         return `import React from 'react';
 import './TerminalCard.css';
@@ -2988,38 +3514,7 @@ export const BackToTop: React.FC = () => {
 export default BackToTop;`;
 
       case 'glass-app-buttons':
-        return `import React from 'react';
-
-export const GlassAppButtons: React.FC = () => {
-  return (
-    <div className="grid grid-cols-2 gap-6 max-w-sm mx-auto p-4 select-none">
-      {/* Apple App Store */}
-      <button className="p-5 rounded-full backdrop-blur-lg border border-white/10 bg-gradient-to-tr from-black/60 to-black/40 shadow-lg hover:shadow-2xl hover:shadow-white/20 hover:scale-110 hover:rotate-3 active:scale-95 active:rotate-0 transition-all duration-300 ease-out cursor-pointer hover:border-white/30 hover:bg-gradient-to-tr hover:from-white/10 hover:to-black/40 group relative overflow-hidden flex items-center justify-center">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out" />
-        <div className="relative z-10">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-7 h-7 fill-current text-white group-hover:text-white/90 transition-colors duration-300">
-            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 4.17c.66-.81 1.11-1.93.99-3.06-1 .04-2.21.67-2.93 1.49-.62.69-1.16 1.84-1.01 2.96 1.12.09 2.27-.57 2.95-1.39z"/>
-          </svg>
-        </div>
-      </button>
-
-      {/* Spotify */}
-      <button className="p-5 rounded-full backdrop-blur-lg border border-green-500/20 bg-gradient-to-tr from-black/60 to-black/40 shadow-lg hover:shadow-2xl hover:shadow-green-500/30 hover:scale-110 hover:rotate-2 active:scale-95 active:rotate-0 transition-all duration-300 ease-out cursor-pointer hover:border-green-500/50 hover:bg-gradient-to-tr hover:from-green-500/10 hover:to-black/40 group relative overflow-hidden flex items-center justify-center">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-green-400/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out" />
-        <div className="relative z-10">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" className="w-7 h-7 text-green-500 fill-current group-hover:text-green-400 transition-colors duration-300">
-            <path d="M248 8C111.1 8 0 119.1 0 256s111.1 248 248 248 248-111.1 248-248S384.9 8 248 8zm100.7 364.9c-4.2 0-6.8-1.3-10.7-3.6-62.4-37.6-135-39.2-206.7-24.5-3.9 1-9 2.6-11.9 2.6-9.7 0-15.8-7.7-15.8-15.8 0-10.3 6.1-15.2 13.6-16.8 81.9-18.1 165.6-16.5 237 30.2 6.1 3.9 9.7 7.4 9.7 16.5s-7.1 15.4-15.2 15.4zm26.9-65.6c-5.2 0-8.7-2.3-12.3-4.2-62.5-37-155.7-51.9-238.6-29.4-4.8 1.3-7.4 2.6-11.9 2.6-10.7 0-19.4-8.7-19.4-19.4s5.2-17.8 15.5-20.7c27.8-7.8 56.2-13.6 97.8-13.6 64.9 0 127.6 16.1 177 45.5 8.1 4.8 11.3 11 11.3 19.7-.1 10.8-8.5 19.5-19.4 19.5zm31-76.2c-5.2 0-8.4-1.3-12.9-3.9-71.2-42.5-198.5-52.7-280.9-29.7-3.6 1-8.1 2.6-11.4 2.6-12.9 0-21.9-9-21.9-21.9 0-10.9 6.5-19 16.1-21.6 90.7-25.5 229.4-12.6 312 37.1 7.1 4.2 10 10.9 10 18.7 0 11.7-9.4 18.7-19 18.7z" />
-          </svg>
-        </div>
-      </button>
-    </div>
-  );
-};
-
-export default GlassAppButtons;`;
-
-      default:
-        return '';
+        return `/* This component is fully styled using utility classes from Tailwind CSS. No additional CSS stylesheets are required. */`;
     }
   };
 
@@ -3102,6 +3597,42 @@ export default GlassAppButtons;`;
               particleCount={controlValues.particleCount !== undefined ? controlValues.particleCount : 12}
               glowColor={hexToRgbStr(controlValues.glowColor || '#8400ff')}
             />
+          </div>
+        );
+      case 'strands':
+        return (
+          <div className="w-full max-w-lg h-80 rounded-2xl border border-zinc-900 overflow-hidden relative">
+            <Strands
+              key={triggerKey}
+              count={controlValues.count !== undefined ? controlValues.count : 3}
+              speed={controlValues.speed !== undefined ? controlValues.speed : 0.5}
+              amplitude={controlValues.amplitude !== undefined ? controlValues.amplitude : 1.0}
+              waviness={controlValues.waviness !== undefined ? controlValues.waviness : 1.0}
+              thickness={controlValues.thickness !== undefined ? controlValues.thickness : 0.7}
+              glow={controlValues.glow !== undefined ? controlValues.glow : 2.6}
+              taper={controlValues.taper !== undefined ? controlValues.taper : 3.0}
+              spread={controlValues.spread !== undefined ? controlValues.spread : 1.0}
+              scale={controlValues.scale !== undefined ? controlValues.scale : 1.5}
+              glass={controlValues.glass === true}
+              refraction={controlValues.refraction !== undefined ? controlValues.refraction : 1.0}
+              dispersion={controlValues.dispersion !== undefined ? controlValues.dispersion : 1.0}
+              glassSize={controlValues.glassSize !== undefined ? controlValues.glassSize : 1.0}
+            />
+          </div>
+        );
+      case 'magnet':
+        return (
+          <div className="w-full h-40 flex items-center justify-center p-4">
+            <Magnet
+              key={triggerKey}
+              padding={controlValues.padding !== undefined ? controlValues.padding : 100}
+              disabled={controlValues.disabled === true}
+              magnetStrength={controlValues.magnetStrength !== undefined ? controlValues.magnetStrength : 2}
+            >
+              <button className="px-6 py-3 rounded-xl border border-violet-500 bg-violet-600/10 text-violet-400 hover:text-white hover:bg-violet-600 font-mono text-xs transition-colors duration-200 shadow-lg shadow-violet-600/10 cursor-pointer">
+                Hover close to pull me!
+              </button>
+            </Magnet>
           </div>
         );
       case 'terminal-card':
