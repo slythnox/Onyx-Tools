@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, Code, RotateCcw, Heart, Copy, Check, Sparkles, RefreshCw, Type, Sliders, Play } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
