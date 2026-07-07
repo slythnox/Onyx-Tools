@@ -44,20 +44,6 @@ Everything is client-side rendered. Everything is exportable. Everything is open
 
 ---
 
-## Screenshots
-
-> **Screenshot placeholders — replace with actual images before publishing.**
-
-| Home | Tool Workspace |
-|---|---|
-| ![Home](docs/images/home.png) | ![Workspace](docs/images/workspace.png) |
-
-| Background Studio | Code Snippets |
-|---|---|
-| ![Background Studio](docs/images/background-studio.png) | ![Code Snippets](docs/images/code-studio.png) |
-
----
-
 ## Tools
 
 Onyx Tools ships six production-ready studios. Each tool operates independently and can export assets directly from the browser.
