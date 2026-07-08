@@ -46,11 +46,12 @@ Everything is client-side rendered. Everything is exportable. Everything is open
 
 ## Tools
 
-Onyx Tools ships six production-ready studios. Each tool operates independently and can export assets directly from the browser.
+Onyx Tools ships seven production-ready studios. Each tool operates independently and can export assets directly from the browser.
 
 | Tool | Description | Category | Shortcut |
 |---|---|---|---|
 | **Code Snippets** | Generate beautiful high-retina code screenshots with IDE themes, gradient layouts, and Mac-style window chrome. Export as PNG. | Developer | `S` |
+| **Device Studio** | Present screenshots inside realistic device mockups (laptops, phones, monitors) with custom layout snap-guides, rotation, and high-res exports. | Design | `V` |
 | **Icon Studio** | Search, customize, and export 1,400+ Lucide icons. Adjust stroke, size, and color. Export as SVG, PNG, or JSX. | Design | `I` |
 | **OKLCH Generator** | Construct perceptually-uniform color systems using the OKLCH color space. Generate semantic token scales for dark and light modes. | Color | `C` |
 | **Background Studio** | Design and export animated WebGL and CSS backgrounds. Seven visual presets with full parameter control. Export as React component, Tailwind, HTML/CSS. | Design | `B` |
@@ -74,7 +75,7 @@ graph TD
     G --> H[React.lazy Module]
     H --> I[Tool Module]
     I --> J[Export Engine]
-    J -->|PNG| K[html-to-image]
+    J -->|PNG/JPG| K[html-to-image]
     J -->|ZIP| L[JSZip]
     J -->|SVG/JSX| M[Clipboard API]
 ```
@@ -84,12 +85,14 @@ graph TD
 ```mermaid
 graph LR
     R[registry/tools.ts] --> S[Code Snippets]
+    R --> DS[Device Studio]
     R --> IC[Icon Studio]
     R --> C[OKLCH Generator]
     R --> B[Background Studio]
     R --> T[Text Animations]
     R --> CO[Components]
     S --> |React.lazy| SB[snippets bundle]
+    DS --> |React.lazy| DSB[device-studio bundle]
     IC --> |React.lazy| IB[icons bundle]
     C --> |React.lazy| CB[colors bundle]
     B --> |React.lazy| BB[backgrounds bundle]

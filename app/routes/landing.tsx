@@ -34,7 +34,7 @@ export default function LandingPage() {
             Every dev tool you need,<br />in one place.
           </h1>
           <p className="text-xs sm:text-sm text-zinc-400 max-w-md leading-relaxed select-none">
-            Six precision-built tools — code snippets, icons, colors, backgrounds, text effects, and UI components. Open source. Always free.
+            Seven precision-built tools — code snippets, mockups, icons, colors, backgrounds, text effects, and UI components. Open source. Always free.
           </p>
           <div className="flex items-center gap-3 mt-2">
             <button

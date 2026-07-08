@@ -1,5 +1,5 @@
 import React from 'react';
-import { Code, Palette, Pipette, Layers, Type, LucideIcon } from 'lucide-react';
+import { Code, Palette, Pipette, Layers, Type, Monitor, LucideIcon } from 'lucide-react';
 
 export interface ToolMetadata {
   id: string;
@@ -79,5 +79,16 @@ export const TOOLS_REGISTRY: ToolMetadata[] = [
     keywords: ['component', 'ui', 'react', 'animated', 'list', 'bento', 'dock', 'motion'],
     featured: true,
     component: React.lazy(() => import('@/modules/components'))
+  },
+  {
+    id: 'device-studio',
+    title: 'Device Studio',
+    description: 'Design and export high-resolution device mockup scenes with realistic shadows.',
+    category: 'Design',
+    icon: Monitor,
+    shortcut: 'V',
+    keywords: ['device', 'mockup', 'iphone', 'macbook', 'ipad', 'screenshot', 'canvas', 'scene'],
+    featured: true,
+    component: React.lazy(() => import('@/modules/device-studio'))
   }
 ];

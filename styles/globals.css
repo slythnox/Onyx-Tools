@@ -171,23 +171,23 @@
     border-color: var(--border-active);
   }
 
-  /* Scrollbar - Ultra Minimal (Industrial Zinc) */
-  .scrollbar-machined::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
+  /* Scrollbar - Ultra Minimal (Industrial Zinc) - Applied globally to all scrollbars */
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
   }
 
-  .scrollbar-machined::-webkit-scrollbar-track {
-    background: var(--bg-black);
+  ::-webkit-scrollbar-track {
+    background: #000000;
   }
 
-  .scrollbar-machined::-webkit-scrollbar-thumb {
-    background: var(--border-active);
-    border-radius: 2px;
+  ::-webkit-scrollbar-thumb {
+    background: #27272a;
+    border-radius: 3px;
   }
 
-  .scrollbar-machined::-webkit-scrollbar-thumb:hover {
-    background: var(--text-dim);
+  ::-webkit-scrollbar-thumb:hover {
+    background: #71717a;
   }
 }
 

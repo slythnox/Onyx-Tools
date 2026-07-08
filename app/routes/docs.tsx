@@ -10,7 +10,8 @@ import {
   Sparkles, 
   Info,
   ChevronRight,
-  Heart
+  Heart,
+  Monitor
 } from 'lucide-react';
 
 interface DocSection {
@@ -25,7 +26,7 @@ export default function DocsPage() {
 
   const SECTIONS: DocSection[] = [
     { id: 'intro', title: 'Introduction', icon: BookOpen },
-    { id: 'tools', title: 'Visual Editors (6)', icon: Layers },
+    { id: 'tools', title: 'Visual Editors (7)', icon: Layers },
     { id: 'components', title: 'UI Components (12)', icon: Code },
     { id: 'credits', title: 'Credits & Resources', icon: Heart },
   ];
@@ -87,7 +88,7 @@ export default function DocsPage() {
           <section id="intro" className="space-y-4 scroll-mt-28">
             <h1 className="text-3xl font-extrabold text-white tracking-tight">Introduction</h1>
             <p className="text-sm leading-relaxed text-zinc-400">
-              Onyx Tools is an open-source, developer-first workspace designed to eliminate visual boilerplate code. Instead of spending hours styling buttons, configuring layouts, or animating components from scratch, Onyx gives you six visual studio-grade editors to live-customize and export production-ready code.
+              Onyx Tools is an open-source, developer-first workspace designed to eliminate visual boilerplate code. Instead of spending hours styling boilerplate, configuring layouts, or animating components from scratch, Onyx gives you seven visual studio-grade editors to live-customize and export production-ready assets.
             </p>
             <div className="p-4 rounded border border-zinc-900 bg-zinc-950/40 space-y-2 flex gap-3 items-start">
               <Info className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
@@ -103,7 +104,7 @@ export default function DocsPage() {
               Visual Editors
             </h2>
             <p className="text-sm text-zinc-400">
-              Onyx comes equipped with six design-system and graphics tools ready to generate optimized CSS, canvas code, and React files:
+              Onyx comes equipped with seven design-system and graphics tools ready to generate optimized CSS, canvas code, and React files:
             </p>
 
             <div className="space-y-4">
@@ -165,6 +166,16 @@ export default function DocsPage() {
                 </div>
                 <p className="text-xs text-zinc-400 leading-relaxed">
                   The primary showcase and sandbox for 12 layout-ready interactive React UI components. Tweak physics sliders, view live render boxes, and copy the full source files.
+                </p>
+              </div>
+
+              <div className="p-5 rounded border border-zinc-900 bg-zinc-950/20 space-y-2">
+                <div className="flex items-center gap-2">
+                  <Monitor className="w-4 h-4 text-red-500" />
+                  <h3 className="font-mono text-sm font-bold text-white">7. Device Studio</h3>
+                </div>
+                <p className="text-xs text-zinc-400 leading-relaxed">
+                  Design and export high-resolution device mockup scenes. Drag, rotate, scale, and align multiple frames (MacBooks, iPhones, iPads, monitors, browsers, watches) on an infinite interactive canvas.
                 </p>
               </div>
 
