@@ -27,9 +27,9 @@ export default function ToolWrapper() {
     };
   }, []);
 
-  // First time landing tour trigger
+  // First time landing tour trigger (triggered on any tool page first visit)
   useEffect(() => {
-    if (toolId === 'backgrounds') {
+    if (toolId) {
       const tourSeen = localStorage.getItem('onyx_tour_seen');
       if (!tourSeen) {
         const timer = setTimeout(() => {
