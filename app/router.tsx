@@ -13,7 +13,7 @@ export default function AppRouter() {
         <Route element={<AppLayout />}>
           <Route path="/" element={<LandingPage />} />
           <Route path="/docs" element={<DocsPage />} />
-          <Route path="/tools" element={<Navigate to="/tools/snippets" replace />} />
+          <Route path="/tools" element={<Navigate to="/tools/backgrounds" replace />} />
           <Route path="/tools/:toolId" element={<ToolWrapper />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
