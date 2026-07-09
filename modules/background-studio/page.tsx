@@ -344,16 +344,16 @@ export default function BackgroundStudio() {
 <div style={{ width: '1080px', height: '1080px', position: 'relative' }}>
   <GradientBlinds
     gradientColors={[${colorsArrStr}]}
-    angle={angle}
-    noise={noise}
-    blindCount={blindCount}
-    blindMinWidth={blindMinWidth}
-    mouseDampening={mouseDampening}
-    mirrorGradient={mirrorGradient}
-    spotlightRadius={spotlightRadius}
-    spotlightSoftness={spotlightSoftness}
-    spotlightOpacity={spotlightOpacity}
-    distortAmount={distortAmount}
+    angle={${angle}}
+    noise={${noise}}
+    blindCount={${blindCount}}
+    blindMinWidth={${blindMinWidth}}
+    mouseDampening={${mouseDampening}}
+    mirrorGradient={${mirrorGradient}}
+    spotlightRadius={${spotlightRadius}}
+    spotlightSoftness={${spotlightSoftness}}
+    spotlightOpacity={${spotlightOpacity}}
+    distortAmount={${distortAmount}}
     shineDirection="${shineDirection}"
   />
 </div>`;
@@ -364,15 +364,15 @@ export default function BackgroundStudio() {
 <div style={{ width: '1080px', height: '1080px', position: 'relative' }}>
   <DotField
     canvasBg="${canvasBg}"
-    dotRadius={dfDotRadius}
-    dotSpacing={dfDotSpacing}
-    cursorRadius={dfCursorRadius}
-    cursorForce={dfCursorForce}
-    bulgeOnly={dfBulgeOnly}
-    bulgeStrength={dfBulgeStrength}
-    glowRadius={dfGlowRadius}
-    sparkle={dfSparkle}
-    waveAmplitude={dfWaveAmplitude}
+    dotRadius={${dfDotRadius}}
+    dotSpacing={${dfDotSpacing}}
+    cursorRadius={${dfCursorRadius}}
+    cursorForce={${dfCursorForce}}
+    bulgeOnly={${dfBulgeOnly}}
+    bulgeStrength={${dfBulgeStrength}}
+    glowRadius={${dfGlowRadius}}
+    sparkle={${dfSparkle}}
+    waveAmplitude={${dfWaveAmplitude}}
     glowColor="${dfGlowColor}"
   />
 </div>`;
@@ -383,21 +383,21 @@ export default function BackgroundStudio() {
 <div style={{ width: '1080px', height: '1080px', position: 'relative' }}>
   <ParticleBurst
     canvasBg="${canvasBg}"
-    particleCount={pbCount}
-    magnetRadius={pbMagnetRadius}
-    ringRadius={pbRingRadius}
-    waveSpeed={pbWaveSpeed}
-    waveAmplitude={pbWaveAmplitude}
-    particleSize={pbParticleSize}
-    lerpSpeed={pbLerpSpeed}
+    particleCount={${pbCount}}
+    magnetRadius={${pbMagnetRadius}}
+    ringRadius={${pbRingRadius}}
+    waveSpeed={${pbWaveSpeed}}
+    waveAmplitude={${pbWaveAmplitude}}
+    particleSize={${pbParticleSize}}
+    lerpSpeed={${pbLerpSpeed}}
     color="${colors[0]||'#ff9ffc'}"
-    autoAnimate={pbAutoAnimate}
-    particleVariance={pbVariance}
-    rotationSpeed={pbRotationSpeed}
-    depthFactor={pbDepthFactor}
-    pulseSpeed={pbPulseSpeed}
+    autoAnimate={${pbAutoAnimate}}
+    particleVariance={${pbVariance}}
+    rotationSpeed={${pbRotationSpeed}}
+    depthFactor={${pbDepthFactor}}
+    pulseSpeed={${pbPulseSpeed}}
     particleShape="${pbShape}"
-    fieldStrength={pbFieldStrength}
+    fieldStrength={${pbFieldStrength}}
   />
 </div>`;
     }
