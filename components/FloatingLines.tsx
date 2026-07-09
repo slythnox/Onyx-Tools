@@ -15,18 +15,21 @@ import './FloatingLines.css';
 
 const vertexShader = `
 precision highp float;
+varying vec2 vUv;
 
 void main() {
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  vUv = uv;
+  gl_Position = vec4(position, 1.0);
 }
 `;
 
 const fragmentShader = `
 precision highp float;
 precision highp int;
+varying vec2 vUv;
 
 uniform float iTime;
-uniform vec3  iResolution;
+uniform float aspect;
 uniform float animationSpeed;
 
 uniform bool enableTop;
@@ -85,39 +88,41 @@ vec3 background_color(vec2 uv) {
 }
 
 vec3 getGradientStop(int index) {
-  if (index == 0) return lineGradient0;
-  if (index == 1) return lineGradient1;
-  if (index == 2) return lineGradient2;
-  if (index == 3) return lineGradient3;
-  if (index == 4) return lineGradient4;
-  if (index == 5) return lineGradient5;
-  if (index == 6) return lineGradient6;
-  if (index == 7) return lineGradient7;
-  return lineGradient0;
+  vec3 result = lineGradient0;
+  if (index == 0) result = lineGradient0;
+  if (index == 1) result = lineGradient1;
+  if (index == 2) result = lineGradient2;
+  if (index == 3) result = lineGradient3;
+  if (index == 4) result = lineGradient4;
+  if (index == 5) result = lineGradient5;
+  if (index == 6) result = lineGradient6;
+  if (index == 7) result = lineGradient7;
+  return result;
 }
 
 vec3 getLineColor(float t, vec3 baseColor) {
-  if (lineGradientCount <= 0) {
-    return baseColor;
+  vec3 result = baseColor;
+
+  if (lineGradientCount > 0) {
+    if (lineGradientCount == 1) {
+      result = getGradientStop(0) * 0.5;
+    } else {
+      float clampedT = clamp(t, 0.0, 0.9999);
+      float scaled = clampedT * float(lineGradientCount - 1);
+      int idx = int(floor(scaled));
+      float f = fract(scaled);
+      int idx2 = idx + 1;
+      if (idx2 >= lineGradientCount) {
+        idx2 = lineGradientCount - 1;
+      }
+
+      vec3 c1 = getGradientStop(idx);
+      vec3 c2 = getGradientStop(idx2);
+      result = mix(c1, c2, f) * 0.5;
+    }
   }
 
-  if (lineGradientCount == 1) {
-    return getGradientStop(0) * 0.5;
-  }
-
-  float clampedT = clamp(t, 0.0, 0.9999);
-  float scaled = clampedT * float(lineGradientCount - 1);
-  int idx = int(floor(scaled));
-  float f = fract(scaled);
-  int idx2 = idx + 1;
-  if (idx2 >= lineGradientCount) {
-    idx2 = lineGradientCount - 1;
-  }
-
-  vec3 c1 = getGradientStop(idx);
-  vec3 c2 = getGradientStop(idx2);
-  
-  return mix(c1, c2, f) * 0.5;
+  return result;
 }
 
   float wave(vec2 uv, float offset, vec2 screenUv, vec2 mouseUv, bool shouldBend) {
@@ -140,7 +145,8 @@ vec3 getLineColor(float t, vec3 baseColor) {
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
-  vec2 baseUv = (2.0 * fragCoord - iResolution.xy) / iResolution.y;
+  vec2 baseUv = vUv * 2.0 - 1.0;
+  baseUv.x *= aspect;
   baseUv.y *= -1.0;
   
   if (parallax) {
@@ -153,8 +159,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
   vec2 mouseUv = vec2(0.0);
   if (interactive) {
-    mouseUv = (2.0 * iMouse - iResolution.xy) / iResolution.y;
-    mouseUv.y *= -1.0;
+    mouseUv = iMouse;
+    mouseUv.x *= aspect;
   }
   
   if (enableBottom) {
@@ -340,11 +346,12 @@ export default function FloatingLines({
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.domElement.style.width = '100%';
     renderer.domElement.style.height = '100%';
+    renderer.domElement.style.display = 'block';
     container.appendChild(renderer.domElement);
 
     const uniforms = {
       iTime: { value: 0 },
-      iResolution: { value: new Vector3(1, 1, 1) },
+      aspect: { value: 1 },
       animationSpeed: { value: animationSpeed },
 
       enableTop: { value: enabledWaves.includes('top') },
@@ -428,10 +435,7 @@ export default function FloatingLines({
       const height = el.clientHeight || 1;
 
       renderer.setSize(width, height, false);
-
-      const canvasWidth = renderer.domElement.width;
-      const canvasHeight = renderer.domElement.height;
-      uniforms.iResolution.value.set(canvasWidth, canvasHeight, 1);
+      uniforms.aspect.value = width / height;
     };
 
     setSize();
@@ -450,9 +454,11 @@ export default function FloatingLines({
       const rect = renderer.domElement.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
-      const dpr = renderer.getPixelRatio();
 
-      targetMouseRef.current.set(x * dpr, (rect.height - y) * dpr);
+      const ndcX = ((x / rect.width) * 2.0) - 1.0;
+      const ndcY = -(((y / rect.height) * 2.0) - 1.0);
+
+      targetMouseRef.current.set(ndcX, ndcY);
       targetInfluenceRef.current = 1.0;
 
       if (parallax) {
