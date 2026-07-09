@@ -2350,9 +2350,9 @@ function Typography() {
   };
 
   return (
-    <div className="flex-1 flex min-h-0 bg-black text-zinc-100">
+    <div className="flex-1 flex flex-col md:flex-row min-h-0 bg-black text-zinc-100">
       {/* 1. COMPONENT SELECTION SIDEBAR */}
-      <aside className="w-60 border-r border-zinc-900 bg-zinc-950/20 p-4 flex flex-col min-h-0 shrink-0">
+      <aside className="w-full md:w-60 border-b md:border-b-0 md:border-r border-zinc-900 bg-zinc-950/20 p-4 flex flex-col min-h-0 shrink-0 h-[28vh] md:h-full">
         <div className="px-1 py-1 text-[10px] font-bold font-mono text-zinc-500 uppercase tracking-widest border-b border-zinc-900/50 pb-2 flex items-center gap-1.5">
           <Layers className="w-3.5 h-3.5 text-zinc-500" />
           <span>Components</span>

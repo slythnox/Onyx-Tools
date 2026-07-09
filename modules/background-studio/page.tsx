@@ -421,9 +421,9 @@ export default function BackgroundStudio() {
   const hasCssTab = activeBg !== 'dot' && activeBg !== 'pb';
 
   return (
-    <div className="flex-1 flex h-full w-full bg-[#120f17] text-zinc-150 min-h-0 min-w-0 overflow-hidden select-none">
+    <div className="flex-1 flex flex-col md:flex-row h-full w-full bg-[#120f17] text-zinc-150 min-h-0 min-w-0 overflow-hidden select-none">
       {/* LEFT SIDEBAR */}
-      <div className="w-[320px] bg-[#09090b] border-r border-zinc-900/60 p-4 flex flex-col justify-between shrink-0 h-full z-10 relative">
+      <div className="w-full md:w-[320px] bg-[#09090b] border-b md:border-b-0 md:border-r border-zinc-900/60 p-4 flex flex-col justify-between shrink-0 h-[40vh] md:h-full z-10 relative">
         <div className="flex-1 overflow-y-auto scrollbar-machined pr-1.5 space-y-5">
           {/* Dropdown */}
           <div className="relative">
@@ -652,7 +652,7 @@ export default function BackgroundStudio() {
       </div>
 
       {/* CANVAS PREVIEW */}
-      <div ref={canvasParentRef} style={{ backgroundColor: canvasBg }} className="flex-1 h-full min-w-0 relative z-0 overflow-hidden transition-colors duration-300">
+      <div ref={canvasParentRef} style={{ backgroundColor: canvasBg }} className="flex-1 h-auto md:h-full min-w-0 relative z-0 overflow-hidden transition-colors duration-300">
         {activeBg === 'blinds' && <GradientBlinds gradientColors={colors} angle={angle} noise={noise} blindCount={blindCount} blindMinWidth={blindMinWidth} mouseDampening={mouseDampening} mirrorGradient={mirrorGradient} spotlightRadius={spotlightRadius} spotlightSoftness={spotlightSoftness} spotlightOpacity={spotlightOpacity} distortAmount={distortAmount} shineDirection={shineDirection} />}
         {activeBg === 'pb' && <ParticleBurst canvasBg={canvasBg} particleCount={pbCount} magnetRadius={pbMagnetRadius} ringRadius={pbRingRadius} waveSpeed={pbWaveSpeed} waveAmplitude={pbWaveAmplitude} particleSize={pbParticleSize} lerpSpeed={pbLerpSpeed} color={colors[0]||'#ff9ffc'} autoAnimate={pbAutoAnimate} particleVariance={pbVariance} rotationSpeed={pbRotationSpeed} depthFactor={pbDepthFactor} pulseSpeed={pbPulseSpeed} particleShape={pbShape} fieldStrength={pbFieldStrength} />}
         {activeBg === 'bends' && <ColorBends rotation={cbRotation} speed={cbSpeed} colors={colors} transparent={cbTransparent} autoRotate={cbAutoRotate} scale={cbScale} frequency={cbFrequency} warpStrength={cbWarpStrength} mouseInfluence={cbMouseInfluence} parallax={cbParallax} noise={cbNoise} iterations={cbIterations} intensity={cbIntensity} bandWidth={cbBandWidth} />}

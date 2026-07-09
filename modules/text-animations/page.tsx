@@ -1565,9 +1565,9 @@ export default function ${activeConfig.name.replace(/\s+/g, '')}({
   };
 
   return (
-    <div className="flex-1 flex h-full w-full bg-[#120f17] text-zinc-150 min-h-0 min-w-0 overflow-hidden select-none">
+    <div className="flex-1 flex flex-col md:flex-row h-full w-full bg-[#120f17] text-zinc-150 min-h-0 min-w-0 overflow-hidden select-none">
       {/* 1. LEFT SIDEBAR */}
-      <div className="w-[320px] bg-[#09090b] border-r border-zinc-900/60 p-4 flex flex-col justify-between shrink-0 h-full z-10 relative">
+      <div className="w-full md:w-[320px] bg-[#09090b] border-b md:border-b-0 md:border-r border-zinc-900/60 p-4 flex flex-col justify-between shrink-0 h-[40vh] md:h-full z-10 relative">
         <div className="flex-1 overflow-y-auto scrollbar-machined pr-1.5 space-y-5">
           <div className="px-1 py-1 text-[10px] font-bold font-mono text-zinc-500 uppercase tracking-widest border-b border-zinc-900/50 pb-2">
             Text Animations
@@ -1611,7 +1611,7 @@ export default function ${activeConfig.name.replace(/\s+/g, '')}({
       </div>
 
       {/* 2. RIGHT WORKSPACE */}
-      <div className="flex-1 h-full min-w-0 flex flex-col p-6 overflow-y-auto scrollbar-machined relative z-0">
+      <div className="flex-1 h-auto md:h-full min-w-0 flex flex-col p-6 overflow-y-auto scrollbar-machined relative z-0">
         
         {/* Header Title Row */}
         <div className="flex items-center justify-between shrink-0 mb-6 border-b border-zinc-900/50 pb-4">
