@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { CanvasDeviceInstance, CanvasBackground, ViewState } from '../types';
 import { getDevice } from '../devices/registry';
 import { DeviceFrame } from '../devices/frames';
-import { ZoomIn, ZoomOut, Maximize2, Lock } from 'lucide-react';
+import { ZoomIn, ZoomOut, Maximize2, Sliders, Lock } from 'lucide-react';
 
 interface CanvasProps {
   devices: CanvasDeviceInstance[];
@@ -13,6 +13,8 @@ interface CanvasProps {
   onSelectDevice: (id: string | null) => void;
   onUpdateDevice: (id: string, updates: Partial<CanvasDeviceInstance>) => void;
   onDeleteDevice: (id: string) => void;
+  isSidebarOpen: boolean;
+  onToggleSidebar: () => void;
 }
 
 export default function Canvas({
@@ -24,6 +26,8 @@ export default function Canvas({
   onSelectDevice,
   onUpdateDevice,
   onDeleteDevice,
+  isSidebarOpen,
+  onToggleSidebar,
 }: CanvasProps) {
   const canvasRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -400,9 +404,16 @@ export default function Canvas({
         </button>
       </div>
 
-      {/* Canvas Info overlay */}
-      <div className="absolute top-4 left-4 text-[10px] font-mono text-zinc-600 select-none">
-        1200 × 800 px scene
+      {/* Canvas Info & Mobile Controls overlay */}
+      <div className="absolute top-4 left-4 flex items-center select-none z-30">
+        <span className="text-[10px] font-mono text-zinc-600">1200 × 800 px scene</span>
+        <button
+          onClick={onToggleSidebar}
+          className="md:hidden flex items-center gap-1.5 px-2.5 py-1.5 rounded border border-zinc-850 bg-zinc-950/95 text-[10px] font-mono font-bold text-zinc-200 hover:text-white transition-all shadow-lg active:scale-95 cursor-pointer ml-3"
+        >
+          <Sliders className="w-3.5 h-3.5 text-zinc-400" />
+          <span>{isSidebarOpen ? 'Close Settings' : 'Settings & Library'}</span>
+        </button>
       </div>
     </div>
   );

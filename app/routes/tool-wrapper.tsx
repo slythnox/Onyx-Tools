@@ -164,8 +164,9 @@ export default function ToolWrapper() {
       <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
         <Suspense
           fallback={
-            <div className="flex-1 flex flex-col items-center justify-center p-8 gap-4">
-              <Skeleton className="w-full max-w-4xl h-[550px] rounded" />
+            <div className="flex-1 w-full h-full bg-[#000000] flex flex-col items-center justify-center gap-3">
+              <div className="w-6 h-6 rounded-full border-2 border-zinc-800 border-t-zinc-100 animate-spin" />
+              <span className="font-mono text-[9px] text-zinc-500 uppercase tracking-widest animate-pulse">Loading Studio Module...</span>
             </div>
           }
         >

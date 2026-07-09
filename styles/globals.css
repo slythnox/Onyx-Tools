@@ -412,3 +412,23 @@ input[type="range"]::-moz-range-thumb {
 .animate-spin-slow {
   animation: spin-slow 20s linear infinite;
 }
+
+/* Force standard mouse cursor composition overrides to fix blend-mode composition hiding pointer */
+html, body {
+  cursor: auto !important;
+}
+input, select, textarea, [role="button"], a, button {
+  cursor: pointer !important;
+}
+.cursor-default {
+  cursor: default !important;
+}
+.cursor-grab {
+  cursor: grab !important;
+}
+.cursor-grabbing {
+  cursor: grabbing !important;
+}
+.cursor-move {
+  cursor: move !important;
+}

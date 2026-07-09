@@ -372,6 +372,8 @@ export default function DeviceStudioPage() {
     }
   };
 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   const handleClearAll = () => {
     setDevices([]);
     setSelectedId(null);
@@ -381,18 +383,30 @@ export default function DeviceStudioPage() {
     <div className="flex-1 flex flex-col h-full overflow-hidden bg-black text-zinc-200">
       {/* 2-Panel Main Layout workspace */}
       <div className="flex-1 flex min-h-0 overflow-hidden relative">
+        {/* Mobile Backdrop for Left Sidebar Overlay */}
+        {isSidebarOpen && (
+          <div
+            onClick={() => setIsSidebarOpen(false)}
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
+          />
+        )}
+
         {/* Consolidated Left sidebar: Library, Settings & Background Setup */}
-        <Sidebar
-          devices={devices}
-          selectedId={selectedId}
-          background={background}
-          onAddDevice={handleAddDevice}
-          onDeleteDevice={handleDeleteDevice}
-          onSelectDevice={setSelectedId}
-          onUpdateDevice={handleUpdateDevice}
-          onUpdateBackground={handleUpdateBackground}
-          onApplyLayoutPreset={handleApplyLayoutPreset}
-        />
+        <div className={`absolute md:relative left-0 top-0 bottom-0 z-50 md:z-auto transition-transform duration-300 w-[340px] shrink-0 h-full ${
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+        }`}>
+          <Sidebar
+            devices={devices}
+            selectedId={selectedId}
+            background={background}
+            onAddDevice={handleAddDevice}
+            onDeleteDevice={handleDeleteDevice}
+            onSelectDevice={setSelectedId}
+            onUpdateDevice={handleUpdateDevice}
+            onUpdateBackground={handleUpdateBackground}
+            onApplyLayoutPreset={handleApplyLayoutPreset}
+          />
+        </div>
 
         {/* Expanded Canvas Panel */}
         <Canvas
@@ -404,6 +418,8 @@ export default function DeviceStudioPage() {
           onSelectDevice={setSelectedId}
           onUpdateDevice={handleUpdateDevice}
           onDeleteDevice={handleDeleteDevice}
+          isSidebarOpen={isSidebarOpen}
+          onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
         />
       </div>
 

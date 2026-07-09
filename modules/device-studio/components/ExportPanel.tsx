@@ -70,7 +70,7 @@ export default function ExportPanel({ devicesCount, onClearAll }: ExportPanelPro
   };
 
   return (
-    <div className="h-14 border-t border-zinc-900 bg-zinc-950/80 backdrop-blur px-6 flex items-center justify-between shrink-0 select-none z-45">
+    <div className="h-auto md:h-14 py-3 md:py-0 border-t border-zinc-900 bg-zinc-950/80 backdrop-blur px-4 md:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0 select-none z-45">
       {/* Scene Summary */}
       <div className="flex items-center gap-4 text-xs font-mono text-zinc-400">
         <span className="flex items-center gap-1.5">
@@ -88,7 +88,7 @@ export default function ExportPanel({ devicesCount, onClearAll }: ExportPanelPro
       </div>
 
       {/* Export Options */}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
         {/* Format Selector */}
         <div className="flex items-center bg-zinc-900 p-0.5 rounded border border-zinc-850">
           {(['png', 'jpg'] as const).map(fmt => (
