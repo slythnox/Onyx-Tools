@@ -92,3 +92,4 @@ export const TOOLS_REGISTRY: ToolMetadata[] = [
     component: React.lazy(() => import('@/modules/snippets'))
   }
 ];
+ 
